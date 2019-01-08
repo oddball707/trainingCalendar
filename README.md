@@ -1,0 +1,2 @@
+# trainingCalendar
+Generate training calendars
