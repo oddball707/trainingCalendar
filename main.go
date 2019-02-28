@@ -1,63 +1,30 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/csv"
-	"flag"
-	"fmt"
 	"log"
-	"os"
-	"time"
+	"net/http"
 
-	"github.com/jordic/goics"
+	h "trainingCalendar/handler"
+	s "trainingCalendar/service"
 )
 
-const dateLayout = "01/02/2006"
-const backupDateLayout = "1/2/06"
-const icalLayout = "20060102"
-var header = []string{"StartDate", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
-var file = "calendar.csv"
-
-
-
 func main() {
-	recalcDate := flag.String("date", "", "Recalculate schedule based on date of race passed in (mm/dd/yyyy)")
-	create := flag.Bool("create", false, "Create a new ical")
-	filestr := flag.String("file", "", "csv file to use")
-	help := flag.Bool("h", false, "Prints this help info")
-	flag.Parse()
+	// initialize service layer
+	srv := s.NewService()
 
-	if(*help) {
-		fmt.Println("Usage: ")
-		flag.PrintDefaults()
-		os.Exit(0)
-	}
+	hnd := h.NewHandler(srv)
 
-	if(*filestr != "") {
-		file = *filestr
-	}
 
-	// Open CSV file
-    f, err := os.Open(file)
-    if err != nil {
-    	fmt.Println("Failed to open csv file: " + file)
-        panic(err)
-    }
-    defer f.Close()
-
-	if( *recalcDate != "") {
-		raceDate, err := time.Parse(dateLayout, *recalcDate)
-		if err != nil {
-			fmt.Println("Improperly formated date: " + *recalcDate)
-			panic(err)
+	// create http server
+	http.HandleFunc("/health", hnd.HealthHandler)
+	http.HandleFunc("/readiness", hnd.ReadinessHandler)
+	http.HandleFunc("/create", hnd.CreateSchedule)
+	go func() {
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			// cannot panic, because this probably is an intentional close
+			log.Printf("Httpserver: ListenAndServe() error: %s", err)
 		}
-		reschedule(f, raceDate)
-	}
-    if(*create) {
-		createIcal(f);
-	}
-    if !*create && *recalcDate == "" {
-    	flag.PrintDefaults()
-	}
+	}()
+	log.Printf("Service started on 0.0.0.0:8080")
+
 }

@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	"flag"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"github.com/jordic/goics"
+	m "trainingCalendar/model"
 )
 
 type Service struct {
@@ -19,11 +19,11 @@ type Service struct {
 
 type ScheduleService interface {
 	Reschedule(f *os.File, raceDate time.Time)
-	CreateIcal(f *os.File)
-	LoadCalendar(f *os.File) Schedule
+	CreateIcal(f *os.File) string
+	LoadCalendar(f *os.File) m.Schedule
 }
 
-func newService() *Service {
+func NewService() *Service {
 	return &Service{}
 }
 
@@ -32,7 +32,7 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
 	writer := csv.NewWriter(f)
     defer writer.Flush()
 
-    weeks := loadCalendar(f)
+    weeks := s.LoadCalendar(f)
 
     //TODO
 
@@ -46,11 +46,11 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
     } else {
     	log.Fatalf("Only Saturday and Sunday Races are supported... Sorry")
     }
-    fmt.Println("Monday before race - " + prevMonday.Format(dateLayout))
+    fmt.Println("Monday before race - " + prevMonday.Format(m.DateLayout))
 
     //count back from there
 	for i := len(weeks)-1; i >= 0; i-- {
-		weeks[i].weekStart = prevMonday	
+		weeks[i].WeekStart = prevMonday
 		prevMonday = prevMonday.AddDate(0, 0, -7)
 	}
 	fmt.Println("New schedule: ")
@@ -59,14 +59,15 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
     weeks.WriteCsv()
 }
 
-func (s *Service) CreateIcal(f *os.File) {
-	weeks := loadCalendar(f)
+func (s *Service) CreateIcal(f *os.File) string {
+	weeks := s.LoadCalendar(f)
 
 	b := &bytes.Buffer{}
 	enc := goics.NewICalEncode(b)
 	enc.Encode(weeks)
 
-	f, err := os.Create("./training.ics")
+	calFile := "./training.ics"
+	f, err := os.Create(calFile)
 	if err != nil {
 		fmt.Println(err.Error())
 		log.Fatalf(err.Error())
@@ -76,9 +77,10 @@ func (s *Service) CreateIcal(f *os.File) {
 	w := bufio.NewWriter(f)
 	b.WriteTo(w)
 	w.Flush()
+	return calFile
 }
 
-func (s *Service) LoadCalendar(f *os.File) Schedule {
+func (s *Service) LoadCalendar(f *os.File) m.Schedule {
 	// Read File into a Variable
 	r := csv.NewReader(f)
     if _, err := r.Read(); err != nil { //read header
@@ -91,23 +93,23 @@ func (s *Service) LoadCalendar(f *os.File) Schedule {
         panic(err)
     }
 
-    var sched Schedule
+    var sched m.Schedule
 
     // Loop through lines & turn into object
     for _, line := range lines {
-    	var days [7]Event
-		monday, err := time.Parse(dateLayout, line[0])
+    	var days [7]m.Event
+		monday, err := time.Parse(m.DateLayout, line[0])
 		if err != nil {
-			monday, _ = time.Parse(backupDateLayout, line[0])
+			monday, _ = time.Parse(m.BackupDateLayout, line[0])
 		}
 		for i, _ := range line[1:] {
-    		days[i] = Event{monday.AddDate(0, 0, i), line[i+1]}
+    		days[i] = m.Event{monday.AddDate(0, 0, i), line[i+1]}
        	}
-        wk := Week{
-            weekStart: monday,
-            days: days,
+        wk := &m.Week{
+            WeekStart: monday,
+            Days: days,
         }
-        sched = append(sched, &wk)
+        sched = append(sched, wk)
     }
 
     return sched

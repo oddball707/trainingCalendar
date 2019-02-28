@@ -1,5 +1,18 @@
 package model
 
+import (
+	"encoding/csv"
+	"fmt"
+	"os"
+	"time"
+	"log"
+	"github.com/jordic/goics"
+)
+
+var DateLayout = "01/02/2006"
+var Header = []string{"StartDate", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
+var BackupDateLayout = "1/2/06"
+
 //A Schedule is an array of Weeks
 type Schedule []*Week
 
@@ -8,10 +21,10 @@ func (s Schedule) Print() {
 	for i, week := range s {
 		fmt.Print(i)
 		fmt.Print("    | ")
-		fmt.Print(week.weekStart.Format(dateLayout))
+		fmt.Print(week.WeekStart.Format(DateLayout))
 		fmt.Print(" | ")
-		for _, day := range week.days {
-			fmt.Print(day.description)
+		for _, day := range week.Days {
+			fmt.Print(day.Description)
 			fmt.Print("  | ")
 		}
 		fmt.Println(" ")
@@ -20,21 +33,27 @@ func (s Schedule) Print() {
 
 func (s Schedule) WriteCsv() {
 	file, err := os.OpenFile("calendar.csv", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
-	checkError("Failed to open calendar.csv", err)
+	if err != nil {
+		fmt.Println("Failed to open calendar.csv: " + err.Error())
+		log.Fatalf(err.Error())
+	}
     defer file.Close()
 
     writer := csv.NewWriter(file)
     defer writer.Flush()
-    writer.Write(header)
+    writer.Write(Header)
 	for _, week := range s {
 		line := make([]string, 8)
-		line[0] = week.weekStart.Format(dateLayout)
-		for i, day := range week.days {
-			line[i+1] = day.description
+		line[0] = week.WeekStart.Format(DateLayout)
+		for i, day := range week.Days {
+			line[i+1] = day.Description
 		}
 		fmt.Println(line)
 		err := writer.Write(line)
-		checkError("Failed to write line", err)
+		if err != nil {
+			fmt.Println("Failed to write line: " + err.Error())
+			log.Fatalf(err.Error())
+		}
 	}
 }
 
@@ -45,15 +64,15 @@ func (s Schedule) EmitICal() goics.Componenter {
 	component.AddProperty("CALSCAL", "GREGORIAN")
 
 	for _, week := range s {
-		for _, day := range week.days {
-			if day.date.Before(time.Now()) { continue }
+		for _, day := range week.Days {
+			if day.Date.Before(time.Now()) { continue }
 			c := goics.NewComponent()
 			c.SetType("VEVENT")
-			k, v := goics.FormatDateField("DTEND", day.date)
+			k, v := goics.FormatDateField("DTEND", day.Date)
 			c.AddProperty(k, v)
-			k, v = goics.FormatDateField("DTSTART", day.date)
+			k, v = goics.FormatDateField("DTSTART", day.Date)
 			c.AddProperty(k, v)
-			c.AddProperty("SUMMARY", day.description)
+			c.AddProperty("SUMMARY", day.Description)
 
 			component.AddComponent(c)
 		}
