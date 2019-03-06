@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"os"
 	"time"
-	s "trainingCalendar/service"
 	m "trainingCalendar/model"
+	s "trainingCalendar/service"
 )
 
 const file = "data/calendar.csv"
+const out = "schedule.ics"
 
 type Handler struct {
 	service s.ScheduleService
@@ -69,7 +70,11 @@ func(h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 
 	h.service.Reschedule(f, raceDate)
 	calFile := h.service.CreateIcal(f)
+	defer calFile.Close()
 
-	http.ServeFile(w, r, calFile)
+	w.Header().Set("Content-Disposition", "attachment; filename=" + out)
+	w.Header().Set("Content-Type", "text/calendar")
+	//stream the body to the client without fully loading it into memory
+	http.ServeFile(w, r, calFile.Name())
 }
 

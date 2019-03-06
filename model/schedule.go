@@ -32,7 +32,7 @@ func (s Schedule) Print() {
 }
 
 func (s Schedule) WriteCsv() {
-	file, err := os.OpenFile("calendar.csv", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	file, err := os.OpenFile("data/calendar.csv", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		fmt.Println("Failed to open calendar.csv: " + err.Error())
 		log.Fatalf(err.Error())
@@ -41,7 +41,11 @@ func (s Schedule) WriteCsv() {
 
     writer := csv.NewWriter(file)
     defer writer.Flush()
-    writer.Write(Header)
+    err = writer.Write(Header)
+	if err != nil {
+		fmt.Println("Failed to write header: " + err.Error())
+		log.Fatalf(err.Error())
+	}
 	for _, week := range s {
 		line := make([]string, 8)
 		line[0] = week.WeekStart.Format(DateLayout)

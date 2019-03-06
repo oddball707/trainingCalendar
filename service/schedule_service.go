@@ -19,7 +19,7 @@ type Service struct {
 
 type ScheduleService interface {
 	Reschedule(f *os.File, raceDate time.Time)
-	CreateIcal(f *os.File) string
+	CreateIcal(f *os.File) *os.File
 	LoadCalendar(f *os.File) m.Schedule
 }
 
@@ -59,37 +59,46 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
     weeks.WriteCsv()
 }
 
-func (s *Service) CreateIcal(f *os.File) string {
-	weeks := s.LoadCalendar(f)
-
+func (s *Service) CreateIcal(csvFile *os.File) *os.File {
+	weeks := s.LoadCalendar(csvFile)
 	b := &bytes.Buffer{}
 	enc := goics.NewICalEncode(b)
 	enc.Encode(weeks)
-
-	calFile := "./training.ics"
+	
+	calFile := "out/training.ics"
 	f, err := os.Create(calFile)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Error creating ical: " + err.Error())
 		log.Fatalf(err.Error())
 	}
-	defer f.Close()
 
 	w := bufio.NewWriter(f)
 	b.WriteTo(w)
+	if err != nil {
+		fmt.Println("Error writing ical: " + err.Error())
+		log.Fatalf(err.Error())
+	}
+
 	w.Flush()
-	return calFile
+	if err != nil {
+		fmt.Println("Error flushing writer: " + err.Error())
+		log.Fatalf(err.Error())
+	}
+
+	return f
 }
 
 func (s *Service) LoadCalendar(f *os.File) m.Schedule {
 	// Read File into a Variable
+	f.Seek(0,0)
 	r := csv.NewReader(f)
     if _, err := r.Read(); err != nil { //read header
-    	fmt.Println(err.Error())
+    	fmt.Println("Error reading csv header: " + err.Error())
         log.Fatal(err)
     }
     lines, err := r.ReadAll()
     if err != nil {
-    	fmt.Println(err.Error())
+    	fmt.Println("Error Reading Csv: " + err.Error())
         panic(err)
     }
 
