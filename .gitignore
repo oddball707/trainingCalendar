@@ -1,3 +1,5 @@
 token.json
 .DS_Store
 .idea/
+data/*
+out/*
