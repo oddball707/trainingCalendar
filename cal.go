@@ -167,7 +167,7 @@ func loadCalendar(f *os.File) Schedule {
     for _, line := range lines {
     	var days [7]Event
 		monday, _ := time.Parse(dateLayout, line[0])
-		for i, _ := range line[1:] {
+		for i, _ := range line[1:8] {
     		days[i] = Event{monday.AddDate(0, 0, i), line[i+1]}
        	}
         wk := Week{
