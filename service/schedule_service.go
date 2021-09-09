@@ -3,6 +3,7 @@ package service
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -18,7 +19,7 @@ type Service struct {
 }
 
 type ScheduleService interface {
-	Reschedule(f *os.File, raceDate time.Time)
+	Reschedule(f *os.File, raceDate time.Time) error
 	CreateIcal(f *os.File) *os.File
 	LoadCalendar(f *os.File) m.Schedule
 }
@@ -27,7 +28,7 @@ func NewService() *Service {
 	return &Service{}
 }
 
-func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
+func (s *Service) Reschedule(f *os.File, raceDate time.Time) error {
 	fmt.Println("Rescheduling based off new race date: " + raceDate.String())
 	writer := csv.NewWriter(f)
     defer writer.Flush()
@@ -44,7 +45,8 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
     } else if dayOfWeek == time.Sunday {
     	prevMonday = raceDate.AddDate(0, 0, -6)
     } else {
-    	log.Fatalf("Only Saturday and Sunday Races are supported... Sorry")
+    	log.Printf("Only Saturday and Sunday Races are supported... Sorry")
+    	return errors.New("Race date is not on a Weekend")
     }
     fmt.Println("Monday before race - " + prevMonday.Format(m.DateLayout))
 
@@ -57,6 +59,7 @@ func (s *Service) Reschedule(f *os.File, raceDate time.Time) {
     weeks.Print()
 
     weeks.WriteCsv()
+    return nil
 }
 
 func (s *Service) CreateIcal(csvFile *os.File) *os.File {
@@ -69,20 +72,20 @@ func (s *Service) CreateIcal(csvFile *os.File) *os.File {
 	f, err := os.Create(calFile)
 	if err != nil {
 		fmt.Println("Error creating ical: " + err.Error())
-		log.Fatalf(err.Error())
+		log.Printf(err.Error())
 	}
 
 	w := bufio.NewWriter(f)
 	b.WriteTo(w)
 	if err != nil {
 		fmt.Println("Error writing ical: " + err.Error())
-		log.Fatalf(err.Error())
+		log.Printf(err.Error())
 	}
 
 	w.Flush()
 	if err != nil {
 		fmt.Println("Error flushing writer: " + err.Error())
-		log.Fatalf(err.Error())
+		log.Printf(err.Error())
 	}
 
 	return f

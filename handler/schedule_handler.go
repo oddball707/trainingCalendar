@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -30,11 +30,14 @@ func NewHandler(service s.ScheduleService) *Handler {
 
 
 func(h *Handler) HealthHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Healthy")
+	log.Print("Healthy")
+	http.StatusText(200)
 }
 
 func(h *Handler) ReadinessHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Ready")
+	log.Print("Ready")
+	http.StatusText(200)
+
 }
 
 func(h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
@@ -50,25 +53,35 @@ func(h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 	var msg DateRequest
 	err = json.Unmarshal(b, &msg)
 	if err != nil {
+		log.Printf("Error Unmarshalling request", err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
 	raceDate, err := time.Parse(m.DateLayout, msg.Date)
 	if err != nil {
-		fmt.Println("Improperly formated date: " + msg.Date)
-		panic(err)
+		raceDate, err = time.Parse(m.BackupDateLayout, msg.Date)
+		if err != nil {
+			log.Print("Improperly formated date: " + msg.Date)
+			http.Error(w, err.Error(), 500)
+			return
+		}
 	}
 
 	// Open CSV file
 	f, err := os.Open(file)
 	if err != nil {
-		fmt.Println("Failed to open csv file: " + file)
-		panic(err)
+		log.Print("Failed to open csv file: " + file)
+		http.Error(w, err.Error(), 500)
+		return
 	}
 	defer f.Close()
 
-	h.service.Reschedule(f, raceDate)
+	err = h.service.Reschedule(f, raceDate)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	calFile := h.service.CreateIcal(f)
 	defer calFile.Close()
 
