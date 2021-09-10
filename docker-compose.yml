@@ -1,0 +1,13 @@
+version: '3'
+services:
+  training-cal-frontend:
+    image: training-cal-frontend:latest
+    environment:
+      PORT: 3000
+      PROXY_API: http://training-cal-backend:8080/
+    ports:
+      - 3000:3000
+  training-cal-backend:
+    image: training-cal-backend:latest
+    ports:
+      - 8080:8080
