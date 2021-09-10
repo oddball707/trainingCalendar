@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import moment from 'moment';
 import {
   Stepper,
   Step,
@@ -22,6 +24,7 @@ import useStyles from './styles';
 
 const steps = ['Race Type', 'Date', 'Review'];
 const { formId, formField } = formModel;
+const baseURL = process.env.REACT_APP_API
 
 function _renderStepContent(step) {
   switch (step) {
@@ -47,10 +50,27 @@ export default function CalendarGenerator() {
   }
 
   async function _submitForm(values, actions) {
-    await _sleep(1000);
     alert(JSON.stringify(values, null, 2));
-    actions.setSubmitting(false);
+    const payload = { "date": moment(values.raceDate).format("MM/D/YY") }
+    console.log(payload);
+    axios({
+      url: baseURL + "/create",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: payload,
+      responseType: 'blob',
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'training.ics');
+      document.body.appendChild(link);
+      link.click();
+    });
 
+    actions.setSubmitting(false);
     setActiveStep(activeStep + 1);
   }
 

@@ -19,5 +19,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /bin/main ./main.
 FROM alpine:3.7
 COPY --from=builder /bin/main /main
 COPY --from=builder /src/training/data /data
+COPY --from=builder /src/training/out /out
 EXPOSE 8080
 ENTRYPOINT ["/main"]

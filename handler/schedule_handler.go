@@ -19,7 +19,7 @@ type Handler struct {
 }
 
 type DateRequest struct {
-	Date	string	`json:"date"`
+	Date string `json:"date"`
 }
 
 func NewHandler(service s.ScheduleService) *Handler {
@@ -28,19 +28,18 @@ func NewHandler(service s.ScheduleService) *Handler {
 	}
 }
 
-
-func(h *Handler) HealthHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) HealthHandler(w http.ResponseWriter, r *http.Request) {
 	log.Print("Healthy")
 	http.StatusText(200)
 }
 
-func(h *Handler) ReadinessHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ReadinessHandler(w http.ResponseWriter, r *http.Request) {
 	log.Print("Ready")
 	http.StatusText(200)
 
 }
 
-func(h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 	// Read body
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -85,9 +84,8 @@ func(h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 	calFile := h.service.CreateIcal(f)
 	defer calFile.Close()
 
-	w.Header().Set("Content-Disposition", "attachment; filename=" + out)
+	w.Header().Set("Content-Disposition", "attachment; filename="+out)
 	w.Header().Set("Content-Type", "text/calendar")
 	//stream the body to the client without fully loading it into memory
 	http.ServeFile(w, r, calFile.Name())
 }
-

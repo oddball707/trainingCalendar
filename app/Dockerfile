@@ -19,7 +19,7 @@ COPY app/ .
 RUN npm run build
 
 # Set the base url
-ENV PROXY_API=$PROXY_API
+ENV REACT_APP_API=$PROXY_API
 
 # Expose $PORT on container.
 EXPOSE $PORT
