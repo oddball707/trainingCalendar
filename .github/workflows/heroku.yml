@@ -1,0 +1,54 @@
+name: Heroku deploy
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      # Runs a set of commands using the runners shell
+      - name: Build frontend image & deploy
+        env:
+          HEROKU_APP_NAME: training-cal
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          DOCKERFILE_NAME: "./app/Dockerfile"
+          DOCKER_OPTIONS: "--no-cache"
+        run: |
+          echo ${HEROKU_API_KEY} | docker login \
+            --username=${HEROKU_EMAIL} \
+            registry.heroku.com \
+            --password-stdin
+          docker build \
+            --file ${DOCKERFILE_NAME} \
+            ${DOCKER_OPTIONS} \
+            --tag registry.heroku.com/${HEROKU_APP_NAME}/web .
+          heroku container:push web --app ${HEROKU_APP_NAME}
+          heroku container:release web --app ${HEROKU_APP_NAME}
+
+      - name: Build backend image & deploy
+        env:
+          HEROKU_APP_NAME: training-calendars
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          DOCKERFILE_NAME: "Dockerfile"
+          DOCKER_OPTIONS: "--no-cache"
+        run: |
+          echo ${HEROKU_API_KEY} | docker login \
+            --username=${HEROKU_EMAIL} \
+            registry.heroku.com \
+            --password-stdin
+          docker build \
+            --file ${DOCKERFILE_NAME} \
+            ${DOCKER_OPTIONS} \
+            --tag registry.heroku.com/${HEROKU_APP_NAME}/web .
+          heroku container:push web --app ${HEROKU_APP_NAME}
+          heroku container:release web --app ${HEROKU_APP_NAME}
