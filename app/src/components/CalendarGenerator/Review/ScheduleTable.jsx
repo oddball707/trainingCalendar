@@ -33,7 +33,7 @@ class ScheduleTable extends React.Component {
       "type": this.props.formValues.raceType
     }
     axios({
-      url: baseURL + "/show",
+      url: "api/show",
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

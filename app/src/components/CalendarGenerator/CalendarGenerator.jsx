@@ -55,7 +55,7 @@ export default function CalendarGenerator() {
       "type": values.raceType
     }
     axios({
-      url: baseURL + "/create",
+      url: "api/create",
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

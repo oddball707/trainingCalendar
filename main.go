@@ -16,11 +16,14 @@ func main() {
 
 	router := mux.NewRouter()
 	router.Use(CORS)
-	router.HandleFunc("/health", hnd.HealthHandler)
-	router.HandleFunc("/readiness", hnd.ReadinessHandler)
-	router.HandleFunc("/create", hnd.CreateIcal)
-	router.HandleFunc("/show", hnd.CreateSchedule)
 
+	router.HandleFunc("/api/health", hnd.HealthHandler)
+	router.HandleFunc("/api/readiness", hnd.ReadinessHandler)
+	router.HandleFunc("/api/create", hnd.CreateIcal)
+	router.HandleFunc("/api/show", hnd.CreateSchedule)
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
+
+	http.Handle("/", router)
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
 		// cannot panic, because this probably is an intentional close
