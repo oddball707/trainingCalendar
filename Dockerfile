@@ -17,7 +17,6 @@ from alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /main ./
 COPY --from=builder /src/data /data
-COPY --from=builder /src/out /out
 COPY --from=node_builder /build ./web
 RUN chmod +x ./main
 
