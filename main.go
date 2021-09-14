@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	h "trainingCalendar/handler"
 	s "trainingCalendar/service"
 
@@ -24,7 +25,8 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
 
 	http.Handle("/", router)
-	err := http.ListenAndServe(":8080", router)
+	port := getEnv("PORT", "8080")
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		// cannot panic, because this probably is an intentional close
 		log.Printf("Httpserver: ListenAndServe() error: %s", err)
@@ -50,4 +52,11 @@ func CORS(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 		return
 	})
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

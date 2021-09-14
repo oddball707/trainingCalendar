@@ -13,7 +13,7 @@ COPY --from=builder /src/app ./
 RUN npm install
 RUN npm run build
 
-from alpine:latest
+FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /main ./
 COPY --from=builder /src/data /data
