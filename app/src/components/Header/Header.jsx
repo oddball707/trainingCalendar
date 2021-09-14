@@ -11,7 +11,7 @@ export default function Header() {
     <AppBar position="absolute" color="default" className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" color="inherit" noWrap>
-          Generate a Training Calendar
+          Training Calendars
         </Typography>
       </Toolbar>
     </AppBar>

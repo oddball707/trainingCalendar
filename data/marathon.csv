@@ -1,0 +1,22 @@
+Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
+Rest,2,4,3,Rest,3,4
+Rest,2,4,3,Rest,4,5
+Rest,3,4,3,Rest,5,Cross
+Cross,3,5,3,Rest,5,8
+Cross,3,5,3,Rest,5,9
+Cross,Cross,5,3,Rest,5,6
+Cross,speed,5,3,Rest,6,11
+Cross,hills,6,3,Rest,6,12
+Cross,speed,5,3,Rest,6,9
+Cross,hills,7,4,Rest,7,14
+Cross,4,7,4,Rest,7,15
+Cross,Cross,5,4,Rest,Rest,Half Marathon
+Cross,speed,8,4,Rest,8,17
+Cross,hills,8,5,Rest,8,18
+Cross,Cross,5,5,Rest,8,13
+Cross,5,8,5,Rest,5,20
+Cross,Cross,5,5,Rest,8,12
+Cross,speed,8,5,Rest,5,20
+Cross,hills,6,5,Rest,4,12
+Cross,4,5,4,Rest,3,8
+Cross,3,4,Rest,Rest,2,Marathon

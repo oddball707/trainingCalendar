@@ -18,7 +18,8 @@ func main() {
 	router.Use(CORS)
 	router.HandleFunc("/health", hnd.HealthHandler)
 	router.HandleFunc("/readiness", hnd.ReadinessHandler)
-	router.HandleFunc("/create", hnd.CreateSchedule)
+	router.HandleFunc("/create", hnd.CreateIcal)
+	router.HandleFunc("/show", hnd.CreateSchedule)
 
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
