@@ -50,12 +50,10 @@ export default function CalendarGenerator() {
   }
 
   async function _submitForm(values, actions) {
-    alert(JSON.stringify(values, null, 2));
     const payload = {
       "date": moment(values.raceDate).format("MM/D/YY"),
       "type": values.raceType
     }
-    console.log(payload);
     axios({
       url: baseURL + "/create",
       method: 'POST',

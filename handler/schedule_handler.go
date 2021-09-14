@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 	m "trainingCalendar/model"
 	s "trainingCalendar/service"
@@ -19,7 +20,7 @@ type Handler struct {
 
 type CreateRequest struct {
 	Date     string `json:"date"`
-	RaceType int    `json:"type"`
+	RaceType string `json:"type"`
 }
 
 func NewHandler(service s.ScheduleService) *Handler {
@@ -91,7 +92,7 @@ func parseCreateReq(r *http.Request) (*m.Race, error) {
 	var msg CreateRequest
 	err = json.Unmarshal(b, &msg)
 	if err != nil {
-		log.Print("Error Unmarshalling request", err)
+		log.Print("Error Unmarshalling request - ", err)
 		return nil, err
 	}
 
@@ -104,7 +105,12 @@ func parseCreateReq(r *http.Request) (*m.Race, error) {
 		}
 	}
 
-	raceType := m.RaceType(msg.RaceType)
+	raceTypeInt, err := strconv.Atoi(msg.RaceType)
+	if err != nil {
+		log.Print("Invalid race type, expected integer")
+		return nil, err
+	}
+	raceType := m.RaceType(raceTypeInt)
 
 	return &m.Race{
 		RaceDate: raceDate,
