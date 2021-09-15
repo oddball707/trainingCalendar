@@ -76,8 +76,7 @@ func (s *Service) LoadCalendar(race *m.Race) (m.Schedule, error) {
 		return nil, err
 	}
 
-	monBeforeRace := prevMonday(race.RaceDate)
-	firstMonday := monBeforeRace.AddDate(0, 0, (len(lines)-1)*-7)
+	firstMonday := s.startDate(race.RaceDate, len(lines))
 	var sched m.Schedule
 
 	// Loop through lines & turn into object
@@ -122,10 +121,15 @@ func (s *Service) readRaceFile(r *m.Race) ([][]string, error) {
 	return lines, nil
 }
 
-func prevMonday(day time.Time) time.Time {
+func (s *Service) prevMonday(day time.Time) time.Time {
 	if day.Weekday() == time.Sunday {
 		return day.AddDate(0, 0, -6)
 	} else {
-		return day.AddDate(0, 0, int(day.Weekday())-1)
+		return day.AddDate(0, 0, (int(day.Weekday())-1)*-1)
 	}
+}
+
+func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
+	monBeforeRace := s.prevMonday(raceDate)
+	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
 }
