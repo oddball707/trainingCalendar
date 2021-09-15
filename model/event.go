@@ -18,7 +18,8 @@ type Race struct {
 type RaceType int
 
 const (
-	Half RaceType = iota
+	None RaceType = iota
+	Half
 	Marathon
 	FiftyK
 	FifyM
@@ -42,4 +43,22 @@ func (r RaceType) GetFile() string {
 		return "data/100m.csv"
 	}
 	return "data/marathon.csv"
+}
+
+func (r RaceType) ToString() string {
+	switch r {
+	case Half:
+		return "Half Marathon"
+	case Marathon:
+		return "Marathon"
+	case FiftyK:
+		return "50K Ultra"
+	case FifyM:
+		return "50 Mile Ultra"
+	case HundredK:
+		return "100K Ultra"
+	case HundredM:
+		return "100 Mile Ultra"
+	}
+	return "Error - Reverting to Marathon"
 }

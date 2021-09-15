@@ -28,6 +28,7 @@ func NewService() *Service {
 }
 
 func (s *Service) GetSchedule(r *m.Race) (*m.Schedule, error) {
+	log.Printf("Creating schedule for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
 	schedule, err := s.LoadCalendar(r)
 	if err != nil {
 		return nil, err
@@ -36,6 +37,7 @@ func (s *Service) GetSchedule(r *m.Race) (*m.Schedule, error) {
 }
 
 func (s *Service) CreateIcal(r *m.Race) (*os.File, error) {
+	log.Printf("Creating an ical for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
 	weeks, err := s.LoadCalendar(r)
 	if err != nil {
 		return nil, err
