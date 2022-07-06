@@ -48,10 +48,11 @@ class ScheduleTable extends React.Component {
     const { tableData } = this.state;
     return (
       <TableContainer component={Paper}>
-      <Table className={classes.table} size="small" aria-label="simple table">
+      <Table className={classes.table} size="large" aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Week</TableCell>
+            <TableCell>Date</TableCell>
             <TableCell align="right">Monday</TableCell>
             <TableCell align="right">Tuesday</TableCell>
             <TableCell align="right">Wednesday</TableCell>
@@ -66,6 +67,9 @@ class ScheduleTable extends React.Component {
             <TableRow key={weekNumber}>
               <TableCell component="th" scope="row">
                 {weekNumber+1}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {new Date(week.weekStart).toDateString()}
               </TableCell>
               {week.days.map(day => (
                 <TableCell align="right">{day.description}</TableCell>
