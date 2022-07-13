@@ -25,6 +25,7 @@ const (
 	FifyM
 	HundredK
 	HundredM
+	Dynamic
 )
 
 func (r RaceType) GetFile() string {
@@ -59,6 +60,8 @@ func (r RaceType) ToString() string {
 		return "100K Ultra"
 	case HundredM:
 		return "100 Mile Ultra"
+	case Dynamic:
+		return "Dynamic Schedule"
 	}
 	return "Error - Reverting to Marathon"
 }

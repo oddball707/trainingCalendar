@@ -73,6 +73,9 @@ func (s *Service) CreateIcal(r *m.Race) (*os.File, error) {
 }
 
 func (s *Service) LoadCalendar(race *m.Race) (m.Schedule, error) {
+	if race.RaceType == m.Dynamic {
+		return generateSchedule(race)
+	}
 	lines, err := s.readRaceFile(race)
 	if err != nil {
 		return nil, err
@@ -123,15 +126,13 @@ func (s *Service) readRaceFile(r *m.Race) ([][]string, error) {
 	return lines, nil
 }
 
-func (s *Service) prevMonday(day time.Time) time.Time {
-	if day.Weekday() == time.Sunday {
-		return day.AddDate(0, 0, -6)
-	} else {
-		return day.AddDate(0, 0, (int(day.Weekday())-1)*-1)
-	}
-}
 
 func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
-	monBeforeRace := s.prevMonday(raceDate)
+	monBeforeRace := PrevMonday(raceDate)
 	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
+}
+
+func generateSchedule(race *m.Race) (schedule m.Schedule, err error) {
+	generator := NewGenerator(0, 2, true)
+	return generator.CreateScheduleForRace(race)
 }
