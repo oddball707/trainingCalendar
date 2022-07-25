@@ -8,7 +8,7 @@ function Success() {
         Your ical training calendar should begin downloading shortly
       </Typography>
       <Typography variant="subtitle1">
-        Thank you using this tool!
+        Thank you for using this tool!
       </Typography>
     </React.Fragment>
   );
