@@ -52,7 +52,7 @@ func (g *Generator) CreateScheduleForRace(r *m.Race) (m.Schedule, error) {
 	}
 
 	weekNumber := 1
-	firstMonday := NextMonday()
+	firstMonday := NextMonday(time.Now())
 	lastMonday := PrevMonday(r.RaceDate)
 
 	totalLength := int(lastMonday.Sub(firstMonday).Hours()/24/7)

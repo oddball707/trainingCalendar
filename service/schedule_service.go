@@ -133,6 +133,6 @@ func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 }
 
 func generateSchedule(race *m.Race) (schedule m.Schedule, err error) {
-	generator := NewGenerator(0, 2, true)
+	generator := NewGenerator(30, 2, true)
 	return generator.CreateScheduleForRace(race)
 }
