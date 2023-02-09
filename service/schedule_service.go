@@ -42,6 +42,7 @@ func (s *Service) CreateIcal(r *m.Race) (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
+	weeks.Print()
 	b := &bytes.Buffer{}
 	enc := goics.NewICalEncode(b)
 	enc.Encode(weeks)
@@ -133,6 +134,6 @@ func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 }
 
 func generateSchedule(race *m.Race) (schedule m.Schedule, err error) {
-	generator := NewGenerator(30, 2, true)
+	generator := NewGenerator(40, 2, true)
 	return generator.CreateScheduleForRace(race)
 }

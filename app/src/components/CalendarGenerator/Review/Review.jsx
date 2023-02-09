@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { Typography, Grid } from '@material-ui/core';
 import ScheduleTable from './ScheduleTable';
-import RaceDate from './RaceDate';
 
 export default function Review() {
   const { values: formValues } = useFormikContext();

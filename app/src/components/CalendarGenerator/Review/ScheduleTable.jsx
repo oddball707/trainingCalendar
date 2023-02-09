@@ -28,9 +28,14 @@ class ScheduleTable extends React.Component {
   }
 
   componentDidMount () {
+    console.log(this.props.formValues)
+
     const payload = {
       "date": moment(this.props.formValues.raceDate).format("MM/D/YY"),
-      "type": this.props.formValues.raceType
+      "type": this.props.formValues.raceType,
+      "weeklyMileage": this.props.formValues.weeklyMileage,
+      "backToBacks": this.props.formValues.backToBacks,
+      "restDays": this.props.formValues.restDays
     }
     axios({
       url: "api/show",

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
+import { useFormikContext, Formik } from 'formik';
 import { Grid, Typography, TextField, Switch } from '@material-ui/core';
-import { SelectField, DatePickerField } from '../../FormFields';
+import { SelectField } from '../../FormFields';
 const raceTypes = [
   {
     value: undefined,
@@ -45,7 +45,7 @@ export default function ScheduleForm(props) {
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         What type of race are you training for?
       </Typography>
       <Grid container spacing={3}>
@@ -61,37 +61,34 @@ export default function ScheduleForm(props) {
       { formValues["raceType"] == 7 ?
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            <Typography variant="h7" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               What is your current weekly mileage?
             </Typography>
             <br/>
             <TextField 
-              defaultValue="10"
               type="number"
-              data
-              onChange={formik.handleChange}
-              value={formik.values.weeklyMileage}
+              onChange={Formik.handleChange}
+              name={weeklyMileage.name}
             />
           </Grid>
           <Grid item xs={12} md={12}>
-            <Typography variant="h7" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               How many rest days do you want to schedule per week?
             </Typography>
             <br/>
             <TextField 
-              defaultValue="2"
               type="number"
-              onChange={formik.handleChange}
-              value={formik.values.restDays}
+              onChange={Formik.handleChange}
+              name={restDays.name}
             />
           </Grid>
           <Grid item xs={12} md={12}>
-            <Typography variant="h7" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               Back to back long runs
             </Typography>
             <Switch
-              onChange={formik.handleChange}
-              value={formik.values.backToBacks}
+              onChange={Formik.handleChange}
+              name={backToBacks.name}
             />
           </Grid>
         </Grid>
