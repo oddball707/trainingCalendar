@@ -4,11 +4,12 @@ import formModel from './formModel';
 const {
   formField: {
     raceType,
-    raceDate
+    raceDate,
+    weeklyMileage,
+    backToBacks,
+    restDays
   }
 } = formModel;
-
-const visaRegEx = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
 
 export default [
   Yup.object().shape({

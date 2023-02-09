@@ -1,7 +1,7 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import { SelectField, DatePickerField } from '../../FormFields';
-
+import { useFormikContext, Formik } from 'formik';
+import { Grid, Typography, TextField, Switch } from '@material-ui/core';
+import { NumberField, SelectField, SwitchField } from '../../FormFields';
 const raceTypes = [
   {
     value: undefined,
@@ -31,18 +31,21 @@ const raceTypes = [
     value: '6',
     label: '100 Mile'
   },
-  
-  
+  {
+    value: '7',
+    label: 'Dynamic Schedule'
+  },
 ]
 
-export default function PaymentForm(props) {
+export default function ScheduleForm(props) {
   const {
-    formField: { raceType }
+    formField: { raceType, weeklyMileage, backToBacks, restDays }
   } = props;
+  const { values: formValues } = useFormikContext();
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         What type of race are you training for?
       </Typography>
       <Grid container spacing={3}>
@@ -55,6 +58,30 @@ export default function PaymentForm(props) {
           />
         </Grid>
       </Grid>
+      { formValues["raceType"] == 7 ?
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={12}>
+            <Typography variant="h6" gutterBottom>
+              What is your current weekly mileage?
+            </Typography>
+            <br/>
+            <NumberField name={weeklyMileage.name}/>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Typography variant="h6" gutterBottom>
+              How many rest days do you want to schedule per week?
+            </Typography>
+            <br/>
+            <NumberField name={restDays.name}/>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Typography variant="h6" gutterBottom>
+              Back to back long runs
+            </Typography>
+            <SwitchField name={backToBacks.name} />
+          </Grid>
+        </Grid>
+      : null }
     </React.Fragment>
   );
 }

@@ -19,8 +19,11 @@ type Handler struct {
 }
 
 type CreateRequest struct {
-	Date     string `json:"date"`
-	RaceType string `json:"type"`
+	Date     		string 	`json:"date"`
+	RaceType 		string 	`json:"type"`
+	WeeklyMileage 	int 	`json:"weeklyMileage"`
+	BackToBacks		bool	`json:"backToBacks"`
+	RestDays		int 	`json:"restDays"`
 }
 
 func NewHandler(service s.ScheduleService) *Handler {
@@ -42,13 +45,13 @@ func (h *Handler) ReadinessHandler(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) CreateIcal(w http.ResponseWriter, r *http.Request) {
 
-	race, err := parseCreateReq(r)
+	race, options, err := parseCreateReq(r)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	calFile, err := h.service.CreateIcal(race)
+	calFile, err := h.service.CreateIcal(race, options)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -64,13 +67,13 @@ func (h *Handler) CreateIcal(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 
-	race, err := parseCreateReq(r)
+	race, options, err := parseCreateReq(r)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	schedule, err := h.service.GetSchedule(race)
+	schedule, err := h.service.GetSchedule(race, options)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -80,12 +83,12 @@ func (h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(schedule)
 }
 
-func parseCreateReq(r *http.Request) (*m.Race, error) {
+func parseCreateReq(r *http.Request) (*m.Race, *m.Options, error) {
 	// Read body
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// Unmarshal
@@ -93,7 +96,7 @@ func parseCreateReq(r *http.Request) (*m.Race, error) {
 	err = json.Unmarshal(b, &msg)
 	if err != nil {
 		log.Print("Error Unmarshalling request - ", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	raceDate, err := time.Parse(m.DateLayout, msg.Date)
@@ -101,19 +104,25 @@ func parseCreateReq(r *http.Request) (*m.Race, error) {
 		raceDate, err = time.Parse(m.BackupDateLayout, msg.Date)
 		if err != nil {
 			log.Print("Improperly formated date: " + msg.Date)
-			return nil, err
+			return nil, nil, err
 		}
 	}
 
 	raceTypeInt, err := strconv.Atoi(msg.RaceType)
 	if err != nil {
 		log.Print("Invalid race type, expected integer")
-		return nil, err
+		return nil, nil, err
 	}
 	raceType := m.RaceType(raceTypeInt)
-
-	return &m.Race{
+	race := &m.Race{
 		RaceDate: raceDate,
 		RaceType: raceType,
-	}, nil
+	}
+	options := &m.Options{
+		WeeklyMileage: 	msg.WeeklyMileage,
+		RestDays: 		msg.RestDays,
+		BackToBacks: 	msg.BackToBacks,
+	}
+
+	return race, options, nil
 }
