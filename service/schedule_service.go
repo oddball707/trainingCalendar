@@ -18,27 +18,27 @@ type Service struct {
 }
 
 type ScheduleService interface {
-	GetSchedule(r *m.Race) (*m.Schedule, error)
-	CreateIcal(r *m.Race) (*os.File, error)
-	LoadCalendar(r *m.Race) (m.Schedule, error)
+	GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error)
+	CreateIcal(r *m.Race, o *m.Options) (*os.File, error)
+	LoadCalendar(r *m.Race, o *m.Options) (m.Schedule, error)
 }
 
 func NewService() *Service {
 	return &Service{}
 }
 
-func (s *Service) GetSchedule(r *m.Race) (*m.Schedule, error) {
+func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
 	log.Printf("Creating schedule for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
-	schedule, err := s.LoadCalendar(r)
+	schedule, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
 	}
 	return &schedule, nil
 }
 
-func (s *Service) CreateIcal(r *m.Race) (*os.File, error) {
+func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
 	log.Printf("Creating an ical for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
-	weeks, err := s.LoadCalendar(r)
+	weeks, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +73,9 @@ func (s *Service) CreateIcal(r *m.Race) (*os.File, error) {
 	return f, nil
 }
 
-func (s *Service) LoadCalendar(race *m.Race) (m.Schedule, error) {
+func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, error) {
 	if race.RaceType == m.Dynamic {
-		return generateSchedule(race)
+		return generateSchedule(race, options)
 	}
 	lines, err := s.readRaceFile(race)
 	if err != nil {
@@ -133,7 +133,7 @@ func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
 }
 
-func generateSchedule(race *m.Race) (schedule m.Schedule, err error) {
-	generator := NewGenerator(40, 2, true)
+func generateSchedule(race *m.Race, o *m.Options) (schedule m.Schedule, err error) {
+	generator := NewGenerator(o.WeeklyMileage, o.RestDays, o.BackToBacks)
 	return generator.CreateScheduleForRace(race)
 }

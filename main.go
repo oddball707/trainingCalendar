@@ -43,7 +43,13 @@ func main() {
 				RaceType: m.Dynamic,
 			}
 
-			calFile, err := srv.CreateIcal(race)
+			options := &m.Options{
+				WeeklyMileage: 50,
+				RestDays: 2,
+				BackToBacks: true,
+			}
+
+			calFile, err := srv.CreateIcal(race, options)
 			if err != nil {
 				log.Printf("Issue creating ical: %v", err)
 			}

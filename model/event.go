@@ -15,6 +15,12 @@ type Race struct {
 	RaceType RaceType
 }
 
+type Options struct {
+	WeeklyMileage 	int 	`json:"weeklyMileage"`
+	BackToBacks		bool	`json:"backToBacks"`
+	RestDays		int 	`json:"restDays"`
+}
+
 type RaceType int
 
 const (
