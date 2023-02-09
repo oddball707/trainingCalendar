@@ -80,6 +80,7 @@ export default function CalendarGenerator() {
   }
 
   function _handleSubmit(values, actions) {
+    console.log(values)
     if (isLastStep) {
       _submitForm(values, actions);
     } else {

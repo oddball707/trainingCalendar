@@ -53,7 +53,7 @@ class ScheduleTable extends React.Component {
     const { tableData } = this.state;
     return (
       <TableContainer component={Paper}>
-      <Table className={classes.table} size="large" aria-label="simple table">
+      <Table className={classes.table} size="medium" aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Week</TableCell>
