@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 	"time"
-	m "trainingCalendar/model"
+	m "github.com/oddball707/trainingCalendar/model"
 
 	"github.com/stretchr/testify/assert"
 )

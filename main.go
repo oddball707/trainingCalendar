@@ -7,11 +7,10 @@ import (
 	"net/http"
 	"os"
 	"time"
-	h "trainingCalendar/handler"
-	m "trainingCalendar/model"
-	s "trainingCalendar/service"
 
-	"github.com/gorilla/mux"
+	h "github.com/oddball707/trainingCalendar/handler"
+	m "github.com/oddball707/trainingCalendar/model"
+	s "github.com/oddball707/trainingCalendar/service"
 )
 
 func main() {
@@ -66,14 +65,8 @@ func main() {
 }
 
 func serve(srv *s.Service, hnd *h.Handler) {
-	router := mux.NewRouter()
-	router.Use(CORS)
-
-	router.HandleFunc("/api/health", hnd.HealthHandler)
-	router.HandleFunc("/api/readiness", hnd.ReadinessHandler)
-	router.HandleFunc("/api/create", hnd.CreateIcal)
-	router.HandleFunc("/api/show", hnd.CreateSchedule)
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
+	router := hnd.NewRouter()
+	hnd.FileServer(router, "/", http.Dir("./web"))
 
 	http.Handle("/", router)
 	port := getEnv("PORT", "8080")
@@ -84,25 +77,6 @@ func serve(srv *s.Service, hnd *h.Handler) {
 	}
 	log.Printf("Service started on 0.0.0.0:8080")
 
-}
-
-func CORS(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		// Set headers
-		w.Header().Set("Access-Control-Allow-Headers", "*")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "*")
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		// Next
-		next.ServeHTTP(w, r)
-		return
-	})
 }
 
 func getEnv(key, fallback string) string {

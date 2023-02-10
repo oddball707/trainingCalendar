@@ -8,7 +8,7 @@ import (
 	"time"
 	"strconv"
 
-	m "trainingCalendar/model"
+	m "github.com/oddball707/trainingCalendar/model"
 )
 
 const (
