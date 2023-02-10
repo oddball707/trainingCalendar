@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	h "trainingCalendar/handler"
-	m "trainingCalendar/model"
-	s "trainingCalendar/service"
+	h "github.com/oddball707/trainingCalendar/handler"
+	m "github.com/oddball707/trainingCalendar/model"
+	s "github.com/oddball707/trainingCalendar/service"
 )
 
 func main() {
@@ -66,7 +66,6 @@ func main() {
 
 func serve(srv *s.Service, hnd *h.Handler) {
 	router := hnd.NewRouter()
-//	router.Get("/", http.FileServer(http.Dir("./web")))
 	hnd.FileServer(router, "/", http.Dir("./web"))
 
 	http.Handle("/", router)

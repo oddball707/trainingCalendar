@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	m "trainingCalendar/model"
-	s "trainingCalendar/service"
+	m "github.com/oddball707/trainingCalendar/model"
+	s "github.com/oddball707/trainingCalendar/service"
 )
 
 const file = "data/calendar.csv"
