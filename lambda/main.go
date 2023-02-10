@@ -2,7 +2,6 @@ package main
 
 import (
 	h "github.com/oddball707/trainingCalendar/handler"
-	m "github.com/oddball707/trainingCalendar/model"
 	s "github.com/oddball707/trainingCalendar/service"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -14,7 +13,7 @@ func main() {
 	// initialize service layer
 	srv := s.NewService()
 	hnd := h.NewHandler(srv)
-	router := h.NewRouter()
+	router := hnd.NewRouter()
 
 	mux := http.NewServeMux()
 
@@ -24,5 +23,5 @@ func main() {
 
 	mux.HandleFunc("/", f)
 
-	lambda.Start(httpadapter.New(mux).ProxyWithConext)
+	lambda.Start(httpadapter.New(mux).ProxyWithContext)
 }

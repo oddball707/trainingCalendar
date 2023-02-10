@@ -10,25 +10,17 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.16"
+      version = "~> 4.54"
     }
   }
 
-  required_version = ">= 1.2.0"
+  required_version = ">= 0.14.0"
 }
 
 provider "aws" {
   region  = "us-west-2"
 }
 
-module "amplify" {
-  source = "aws/amplify/site"
-  name   = "training-calendar-frontend"
-
-  build_settings = {
-    backend_environment_name = "prod"
-  }
-}
 
 data "archive-file" "zip" {
   type        = "zip"
@@ -84,28 +76,36 @@ resource "aws_api_gateway_method" "method" {
   authorization = "NONE"
 }
 
-module "lambda" {
-  source = "aws/lambda"
-  name   = "training-calendar-generator"
-
-  function-name = "training-calendar-generator"
-  
-  vpc_config = {
-    subnet_ids = [
-      module.amplify.subnet_ids
-    ]
+resource "aws_amplify_app" "training-calendar-frontend" {
+  name       = "Training Calendar Frontend"
+  repository = "github.com/oddball707/trainingCalendar/app"
+  iam_service_role_arn = aws_iam_role.amplify-codecommit.arn
+  enable_branch_auto_build = true
+  build_spec = <<-EOT
+    version: 0.1
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  EOT
+  # The default rewrites and redirects added by the Amplify Console.
+  custom_rule {
+    source = "/<*>"
+    status = "404"
+    target = "/index.html"
   }
-
-  tags = {
-    Terraform = "True"
-    Environment = "prod"
+  environment_variables = {
+    ENV = "dev"
   }
-}
-
-output "lambda_arn" {
-  value = module.lambda.arn
-}
-
-output "amplify_app_id" {
-  value = module.amplify.app_id
 }
