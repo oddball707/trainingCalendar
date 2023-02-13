@@ -19,7 +19,3 @@ npm:
 
 heroku:
 	git push heroku master
-
-.PHONY: lambda
-lambda:
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ./lambda/main ./lambda

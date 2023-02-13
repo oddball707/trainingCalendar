@@ -21,16 +21,9 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-
-data "archive-file" "zip" {
-  type        = "zip"
-  source_file = "lambda/main"
-  output_path = "main.zip"
-}
-
 resource "aws_lambda_function" "training-calendar-generator" {
   function_name    = "time"
-  filename         = "main.zip"
+  filename         = "lambda/lambda.zip"
   handler          = "main"
   source_code_hash = "data.archive_file.zip.output_base64sha256"
   role             = "${aws_iam_role.iam_for_lambda.arn}"
