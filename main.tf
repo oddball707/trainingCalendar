@@ -72,7 +72,7 @@ resource "aws_api_gateway_method" "method" {
 resource "aws_amplify_app" "training-calendar-frontend" {
   name       = "Training Calendar Frontend"
   repository = "github.com/oddball707/trainingCalendar/app"
-  iam_service_role_arn = aws_iam_role.amplify-codecommit.arn
+  iam_service_role_arn = aws_iam_role.iam_for_lambda.arn
   enable_branch_auto_build = true
   build_spec = <<-EOT
     version: 0.1
