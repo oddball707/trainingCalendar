@@ -21,38 +21,17 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-
-data "archive_file" "zip" {
-  type        = "zip"
-  source_file = "lambda/main"
-  output_path = "main.zip"
-}
-
-resource "random_pet" "lambda_bucket_name" {
-  prefix = "training-calendar"
-  length = 4
-}
-
-resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = random_pet.lambda_bucket_name.id
-}
-
-resource "aws_s3_object" "lambda_training_calendar" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-
-  key    = "main.zip"
-  source = data.archive_file.zip.output_path
-
-  etag = filemd5(data.archive_file.zip.output_path)
+resource "null_resource" "gobuild" {
+  provisioner "local-exec" {
+    command = "cd lambda && CGO_ENABLED=0 go build && zip -r main.zip main"
+  }
 }
 
 resource "aws_lambda_function" "training-calendar-generator" {
-  function_name    = "time"
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
-  s3_key           = aws_s3_object.lambda_training_calendar.key
+  function_name    = "training-calendar-generator"
+  filename         = "lambda/main.zip"
   handler          = "main"
-  source_code_hash = "data.archive_file.zip.output_base64sha256"
-  role             = aws_iam_role.iam_for_lambda.arn
+  role             = "${aws_iam_role.iam_for_lambda.arn}"
   runtime          = "go1.x"
   memory_size      = 128
   timeout          = 10
@@ -61,18 +40,21 @@ resource "aws_lambda_function" "training-calendar-generator" {
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-      }
-    ]
-  })
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
 }
 
 resource "aws_api_gateway_rest_api" "api" {
