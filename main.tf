@@ -21,15 +21,9 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-resource "null_resource" "gobuild" {
-  provisioner "local-exec" {
-    command = "cd lambda && CGO_ENABLED=0 go build && zip -r main.zip main"
-  }
-}
-
 resource "aws_lambda_function" "training-calendar-generator" {
   function_name    = "training-calendar-generator"
-  filename         = "lambda/main.zip"
+  filename         = "lambda/lambda.zip"
   handler          = "main"
   role             = "${aws_iam_role.iam_for_lambda.arn}"
   runtime          = "go1.x"
@@ -72,40 +66,4 @@ resource "aws_api_gateway_method" "method" {
   resource_id   = "${aws_api_gateway_resource.resource.id}"
   http_method   = "GET"
   authorization = "NONE"
-}
-
-resource "aws_amplify_app" "training-calendar-frontend" {
-  name       = "Training Calendar Frontend"
-  repository = "github.com/oddball707/trainingCalendar"
-  iam_service_role_arn = aws_iam_role.iam_for_lambda.arn
-  enable_branch_auto_build = true
-  build_spec = <<-EOT
-    version: 0.1
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - cd app
-            - npm install
-        build:
-          commands:
-            - cd app
-            - npm run build
-      artifacts:
-        baseDirectory: app/build
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - app/node_modules/**/*
-  EOT
-  # The default rewrites and redirects added by the Amplify Console.
-  custom_rule {
-    source = "/<*>"
-    status = "404"
-    target = "/index.html"
-  }
-  environment_variables = {
-    ENV = "dev"
-  }
 }

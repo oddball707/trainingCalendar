@@ -3,8 +3,7 @@ token.json
 .idea/
 .terraform/
 out/
-lambda/main
-lambda/lambda.zip
+lambda/lambda
 trainingCalendar
 **/node_modules
 **/npm-debug.log
