@@ -24,7 +24,7 @@ provider "aws" {
 resource "aws_lambda_function" "training-calendar-generator" {
   function_name    = "training-calendar-generator"
   filename         = "lambda/lambda.zip"
-  handler          = "main"
+  handler          = "lambda"
   role             = "${aws_iam_role.iam_for_lambda.arn}"
   runtime          = "go1.x"
   memory_size      = 128
