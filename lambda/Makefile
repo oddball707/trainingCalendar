@@ -1,16 +1,9 @@
 .PHONY: clean
 clean:
-	rm -f main lambda.zip
+	rm -f main main.zip
 
 main:
-	go build -o $@ main.go
-
-# compile the code to run in Lambda (local or real)
-lambda:
-	GOOS=linux GOARCH=amd64 go build -o lambda
+	GOOS=linux GOARCH=amd64 go build -o $@ main.go
 
 .PHONY: build
-build: clean lambda
-
-lambda.zip: lambda
-	zip $@ lambda
+build: clean main
