@@ -24,7 +24,7 @@ import useStyles from './styles';
 
 const steps = ['Race Type', 'Date', 'Review'];
 const { formId, formField } = formModel;
-const baseURL = process.env.REACT_APP_API
+const baseURL = process.env.API_URL
 
 function _renderStepContent(step) {
   switch (step) {
@@ -59,7 +59,7 @@ export default function CalendarGenerator() {
       "restDays": values.restDays
     }
     axios({
-      url: "api/create",
+      url: `${baseURL}/api/create`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
