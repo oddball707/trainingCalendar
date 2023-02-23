@@ -48,8 +48,9 @@ func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
 	enc.Encode(weeks)
 
 	calFile := "out/training.ics"
-	if _, err := os.Stat(calFile); os.IsNotExist(err) {
-		os.MkdirAll("out", 0700)
+	err = os.MkdirAll("out", 0700)
+	if err != nil {
+		log.Print("Error creating out dir: " + err.Error())
 	}
 	f, err := os.Create(calFile)
 	if err != nil {
