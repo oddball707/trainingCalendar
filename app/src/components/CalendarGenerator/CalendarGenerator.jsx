@@ -59,7 +59,7 @@ export default function CalendarGenerator() {
       "restDays": values.restDays
     }
     axios({
-      url: `${baseURL}api/create`,
+      url: `${baseURL}/api/create`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
