@@ -54,7 +54,7 @@ func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
 	// }
 	f, err := os.Create(calFile)
 	if err != nil {
-		log.Print("Error creating ical: " + err.Error())
+		log.Print("Error creating ical file: " + err.Error())
 		return nil, err
 	}
 
