@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import useStyles from './styles';
 
 const classes = useStyles;
-const baseURL = process.env.API_URL
+const baseURL = process.env.REACT_APP_API_URL
 
 class ScheduleTable extends React.Component {
 
