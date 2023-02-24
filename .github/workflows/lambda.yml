@@ -27,13 +27,11 @@ jobs:
         with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Build
+      - name: Build & Deploy
         run: |
           git config url.ssh://git@github.com/.insteadOf https://github.com/
           cd lambda
           go env -w GOPRIVATE="github.com/oddball707/"
           GOOS=linux GOARCH=amd64 go build -o main main.go
           zip main.zip main
-          
-      - name: Deploy
-        run: aws lambda update-function-code --function-name=training-calendar-generator --zip-file=filedb://lambda/main.zip
+          aws lambda update-function-code --function-name=training-calendar-generator --zip-file=fileb://main.zip
