@@ -4,7 +4,6 @@ token.json
 .terraform/
 out/
 lambda/main
-lambda/main.zip
 trainingCalendar
 **/node_modules
 **/npm-debug.log
