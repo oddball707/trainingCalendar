@@ -47,15 +47,18 @@ func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
 	enc := goics.NewICalEncode(b)
 	enc.Encode(weeks)
 
-	calFile := "out/training.ics"
-	if _, err := os.Stat(calFile); os.IsNotExist(err) {
-		os.MkdirAll("out", 0700)
-	}
+	calFile := "/tmp/training.ics"
+	// err = os.MkdirAll("out", 0700)
+	// if err != nil {
+	// 	log.Print("Error creating out dir: " + err.Error())
+	// }
 	f, err := os.Create(calFile)
 	if err != nil {
-		log.Print("Error creating ical: " + err.Error())
+		log.Print("Error creating ical file: " + err.Error())
 		return nil, err
 	}
+
+	defer f.Close()
 
 	w := bufio.NewWriter(f)
 	b.WriteTo(w)

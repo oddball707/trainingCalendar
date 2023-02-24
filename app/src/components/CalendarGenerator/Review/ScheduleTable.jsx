@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import useStyles from './styles';
 
 const classes = useStyles;
-const baseURL = process.env.REACT_APP_API
+const baseURL = process.env.REACT_APP_API_URL
 
 class ScheduleTable extends React.Component {
 
@@ -38,7 +38,7 @@ class ScheduleTable extends React.Component {
       "restDays": this.props.formValues.restDays
     }
     axios({
-      url: "api/show",
+      url: `${baseURL}/api/show`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
