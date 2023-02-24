@@ -21,12 +21,6 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-data "archive_file" "main" {
-  type        = "zip"
-  source_file = "lambda/main"
-  output_path = "lambda/main.zip"
-}
-
 
 resource "aws_lambda_function" "training-calendar-generator" {
   function_name    = "training-calendar-generator"
