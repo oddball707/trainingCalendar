@@ -31,7 +31,7 @@ jobs:
         run: |
           git config url.ssh://git@github.com/.insteadOf https://github.com/
           cd lambda
-          go env -w GOPRIVATTE="github.com/oddball707/"
+          go env -w GOPRIVATE="github.com/oddball707/"
           GOOS=linux GOARCH=amd64 go build -o main main.go
           zip main.zip main
           
