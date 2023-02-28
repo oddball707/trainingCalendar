@@ -33,5 +33,5 @@ jobs:
           cd lambda
           go env -w GOPRIVATE="github.com/oddball707/"
           GOOS=linux GOARCH=amd64 go build -o main main.go
-          zip main.zip main
+          zip main.zip main ../data
           aws lambda update-function-code --function-name=training-calendar-generator --zip-file=fileb://main.zip
