@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
 	m "github.com/oddball707/trainingCalendar/model"
 	s "github.com/oddball707/trainingCalendar/service"
 )
 
-const file = "data/calendar.csv"
 const out = "schedule.ics"
 
 type Handler struct {
@@ -19,11 +19,9 @@ type Handler struct {
 }
 
 type CreateRequest struct {
-	Date     		string 	`json:"date"`
-	RaceType 		string 	`json:"type"`
-	WeeklyMileage 	int 	`json:"weeklyMileage"`
-	BackToBacks		bool	`json:"backToBacks"`
-	RestDays		int 	`json:"restDays"`
+	Date     string    `json:"date"`
+	RaceType string    `json:"type"`
+	Options  m.Options `json:"options"`
 }
 
 func NewHandler(service s.ScheduleService) *Handler {
@@ -118,11 +116,7 @@ func parseCreateReq(r *http.Request) (*m.Race, *m.Options, error) {
 		RaceDate: raceDate,
 		RaceType: raceType,
 	}
-	options := &m.Options{
-		WeeklyMileage: 	msg.WeeklyMileage,
-		RestDays: 		msg.RestDays,
-		BackToBacks: 	msg.BackToBacks,
-	}
+	options := &msg.Options
 
 	return race, options, nil
 }

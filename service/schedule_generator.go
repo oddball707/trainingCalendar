@@ -5,24 +5,27 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"regexp"
 	"time"
-	"strconv"
 
 	m "github.com/oddball707/trainingCalendar/model"
 )
 
+// Assumes 3 easy + 1 tempo + 1 med + 1 long = 110%
 const (
 	MinimumWeeklyMileage = 15
-	EasyDayPercentage = 0.1
-	MedDayPercentage = 0.17
-	LongDayPercentage = 0.4
-	TempoDayPercentage = 0.23
+	EasyDayPercentage    = 0.1
+	MedDayPercentage     = 0.17
+	LongDayPercentage    = 0.4
+	TempoDayPercentage   = 0.23
 )
 
 type Generator struct {
 	CurrentWeeklyMileage int
-	RestDays			 int
-	BackToBacks			 bool
+	RestDays             int
+	BackToBacks          bool
+	RestWeekFreq         int
+	RestWeekLevel        float64
 }
 
 type ScheduleGenerator interface {
@@ -30,17 +33,25 @@ type ScheduleGenerator interface {
 	CreateScheduleStartingNow(totalLength int) (m.Schedule, error)
 }
 
-func NewGenerator(currentMileage int, desiredRestDays int, backToBacks bool) *Generator {
+func NewGenerator(options *m.Options) *Generator {
+	if options.RestWeekFreq == 0 {
+		options.RestWeekFreq = 4
+	}
+	if options.RestWeekLevel == 0 {
+		options.RestWeekLevel = 60
+	}
 	return &Generator{
-		CurrentWeeklyMileage: currentMileage,
-		RestDays: desiredRestDays,
-		BackToBacks: backToBacks,
+		CurrentWeeklyMileage: options.WeeklyMileage,
+		RestDays:             options.RestDays,
+		BackToBacks:          options.BackToBacks,
+		RestWeekFreq:         options.RestWeekFreq,
+		RestWeekLevel:        float64(options.RestWeekLevel) / 100,
 	}
 }
 
 func (g *Generator) CreateScheduleForRace(r *m.Race) (m.Schedule, error) {
 	if g.RestDays > 4 {
-		return nil, errors.New("Too many rest days")
+		return nil, errors.New("too many rest days")
 	} else if g.RestDays > 3 {
 		log.Print("Suggest at most 3 rest days per week")
 	} else if g.RestDays < 1 {
@@ -56,7 +67,7 @@ func (g *Generator) CreateScheduleForRace(r *m.Race) (m.Schedule, error) {
 	firstMonday := NextMonday(time.Now())
 	lastMonday := PrevMonday(r.RaceDate)
 
-	totalLength := int(lastMonday.Sub(firstMonday).Hours()/24/7)
+	totalLength := int(lastMonday.Sub(firstMonday).Hours() / 24 / 7)
 
 	fmt.Printf("Total hours in schedule: %v\n", int(lastMonday.Sub(firstMonday).Hours()))
 	fmt.Printf("Total weeks in schedule: %v\n", totalLength)
@@ -65,20 +76,16 @@ func (g *Generator) CreateScheduleForRace(r *m.Race) (m.Schedule, error) {
 	for firstMonday.Before(r.RaceDate) {
 		fmt.Printf("Week # %v\n", weekNumber)
 		var week *m.Week
-		if weekNumber % 3 == 0 {
-			fmt.Printf("Weekly Mileage: %v\n", weeklyMileage / 2)
-			week = g.generateWeek(firstMonday, weeklyMileage / 2)
+		if weekNumber%g.RestWeekFreq == 0 {
+			fmt.Printf("Target Rest Weekly Mileage: %v\n", weeklyMileage*(float64(g.RestWeekLevel)))
+			week = g.generateWeek(firstMonday, weeklyMileage*(float64(g.RestWeekLevel)))
 		} else {
 			fmt.Printf("Target Weekly Mileage: %v\n", weeklyMileage)
 			week = g.generateWeek(firstMonday, weeklyMileage)
-			actualMileage := 0
-			for _, day := range week.Days {
-				mile, _ := strconv.Atoi(day.Description)
-				actualMileage += mile
-			}
-			fmt.Printf("Actual Weekly Mileage: %v\n", actualMileage)
-			weeklyMileage += weeklyGrowth(weeklyMileage)
 		}
+		week.WowIncrease = g.increase(sched, week.TotalDistance)
+		weeklyMileage += weeklyGrowth(weeklyMileage)
+
 		sched = append(sched, week)
 		firstMonday = firstMonday.AddDate(0, 0, 7)
 		weekNumber += 1
@@ -93,22 +100,40 @@ func CreateScheduleStartingNow(totalLength int) (schedule *m.Schedule, err error
 	return nil, nil
 }
 
+func (g *Generator) increase(sched m.Schedule, actualMileage int) string {
+	if len(sched) < 1 {
+		return "-"
+	}
+	wow := 1 - (float64(sched[len(sched)-1].TotalDistance) / float64(actualMileage))
+	if wow < 0 {
+		return "-"
+	} else if wow > (1 - g.RestWeekLevel) {
+		wow = 1 - (float64(sched[len(sched)-2].TotalDistance) / float64(actualMileage))
+	}
+	r, _ := regexp.Compile(`\.?0*$`)
+	return fmt.Sprintf("%s%%\n", r.ReplaceAllString(fmt.Sprintf("%.2f", 100*wow), ""))
+}
+
 func (g *Generator) setTaper(sched m.Schedule, weeklyMileage float64) m.Schedule {
 	secondlastWeek := sched[len(sched)-2]
 	lastMonday := sched[len(sched)-1].WeekStart
-	taper := g.generateWeek(secondlastWeek.WeekStart, weeklyMileage / 3)
-	
-	monday := m.Event{lastMonday, "Rest"}
-	tuesday := m.Event{lastMonday.AddDate(0, 0, 1), "2"}
-	wednesday := m.Event{lastMonday.AddDate(0, 0, 2), "3"}
-	thursday := m.Event{lastMonday.AddDate(0, 0, 3), "Rest"}
-	friday := m.Event{lastMonday.AddDate(0, 0, 4), "2"}
-	saturday := m.Event{lastMonday.AddDate(0, 0, 5), "Race Day!"}
-	sunday := m.Event{lastMonday.AddDate(0, 0, 6),  "Rest"}
+	taper := g.generateWeek(secondlastWeek.WeekStart, weeklyMileage/3)
+	taper.SetDistance()
+	taper.WowIncrease = "--taper--"
+
+	monday := m.Event{Date: lastMonday, Description: "Rest"}
+	tuesday := m.Event{Date: lastMonday.AddDate(0, 0, 1), Description: "2"}
+	wednesday := m.Event{Date: lastMonday.AddDate(0, 0, 2), Description: "3"}
+	thursday := m.Event{Date: lastMonday.AddDate(0, 0, 3), Description: "Rest"}
+	friday := m.Event{Date: lastMonday.AddDate(0, 0, 4), Description: "2"}
+	saturday := m.Event{Date: lastMonday.AddDate(0, 0, 5), Description: "Race Day!"}
+	sunday := m.Event{Date: lastMonday.AddDate(0, 0, 6), Description: "Rest"}
 
 	raceWeek := &m.Week{
-		WeekStart: lastMonday,
-		Days: [7]m.Event{monday, tuesday, wednesday, thursday, friday, saturday, sunday},
+		WeekStart:     lastMonday,
+		Days:          [7]m.Event{monday, tuesday, wednesday, thursday, friday, saturday, sunday},
+		TotalDistance: 7,
+		WowIncrease:   "--race week--",
 	}
 	sched[len(sched)-2] = taper
 	sched[len(sched)-1] = raceWeek
@@ -120,79 +145,103 @@ func weeklyGrowth(x float64) float64 {
 }
 
 func (g *Generator) generateWeek(firstMonday time.Time, weeklyMileage float64) *m.Week {
-	longDay := fmt.Sprintf("%v", int(math.Floor(weeklyMileage * LongDayPercentage)))
-	easyDay := fmt.Sprintf("%v", int(math.Ceil(weeklyMileage * EasyDayPercentage)))
-	medDay := fmt.Sprintf("%v", int(math.Floor(weeklyMileage * MedDayPercentage)))
-	tempoDay := fmt.Sprintf("%v", int(math.Ceil(weeklyMileage * TempoDayPercentage)))
+	longDay := int(math.Floor(weeklyMileage * LongDayPercentage))
+	easyDay := int(math.Ceil(weeklyMileage * EasyDayPercentage))
+	medDay := int(math.Floor(weeklyMileage * MedDayPercentage))
+	tempoDay := int(math.Ceil(weeklyMileage * TempoDayPercentage))
 
-	var (
-		sundayMileage string = "Rest"
-		mondayMileage string = "Rest"
-		tuesdayMileage string = "Rest"
-		wednesdayMileage string = "Rest"
-		thursdayMileage string = "Rest"
-		fridayMileage string = "Rest"
-	)
-	
+	//[Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+	days := [7]int{0, 0, 0, 0, 0, longDay, 0}
+
 	switch g.RestDays {
 	case 4:
-		tuesdayMileage = longDay
-		thursdayMileage = tempoDay
-	case 3:
-		mondayMileage = tempoDay
-		tuesdayMileage = medDay
-		thursdayMileage = tempoDay
-	case 2:
-		tuesdayMileage = easyDay
-		thursdayMileage = easyDay
+		//3 days = .4+.4+.23 = 103%
 		if g.BackToBacks {
-			sundayMileage = tempoDay
-			wednesdayMileage = medDay
+			days[2] = longDay - 1
+			days[6] = tempoDay
 		} else {
-			sundayMileage = easyDay
-			wednesdayMileage = medDay
+			days[1] = longDay - 1
+			days[3] = tempoDay
+		}
+	case 3:
+		//4 days .4+.23+.23+.17= 103%
+		if g.BackToBacks {
+			days[6] = tempoDay
+		} else {
+			days[0] = tempoDay
+		}
+		days[1] = medDay
+		days[3] = tempoDay - 1
+	case 2:
+		//5 days .1+.1+.17+.23+.4 = 100%
+		if g.BackToBacks {
+			days[1] = easyDay
+			days[2] = medDay
+			days[3] = easyDay
+			days[6] = tempoDay
+		} else {
+			days[1] = tempoDay
+			days[2] = easyDay
+			days[3] = medDay
+			days[6] = easyDay
 		}
 	case 1:
+		//.1+.1+.1+.17+.17+.4 = 104
 		if g.BackToBacks {
-			tuesdayMileage = easyDay
-			wednesdayMileage = medDay
-			thursdayMileage = easyDay
-			fridayMileage = easyDay
-			sundayMileage = tempoDay
-		} else {			
-			tuesdayMileage = medDay
-			wednesdayMileage = easyDay
-			thursdayMileage = tempoDay
-			fridayMileage = easyDay
-			sundayMileage = easyDay
+			days[1] = easyDay
+			days[2] = medDay
+			days[3] = easyDay
+			days[4] = easyDay - 1
+			days[6] = medDay
+		} else {
+			days[1] = medDay
+			days[2] = easyDay
+			days[3] = medDay
+			days[4] = easyDay - 1
+			days[6] = easyDay
 		}
 	case 0:
+		//.1+.1+.1+.1+.1+.17+.4=107%
 		if g.BackToBacks {
-			mondayMileage = easyDay
-			tuesdayMileage = easyDay
-			wednesdayMileage = medDay
-			thursdayMileage = easyDay
-			fridayMileage = easyDay
-			sundayMileage = tempoDay
-		} else {			
-			tuesdayMileage = medDay
-			wednesdayMileage = easyDay
-			thursdayMileage = tempoDay
-			fridayMileage = easyDay
-			sundayMileage = easyDay
+			days[0] = easyDay - 1
+			days[1] = easyDay
+			days[2] = easyDay - 1
+			days[3] = easyDay
+			days[4] = easyDay - 1
+			days[6] = medDay
+		} else {
+			days[0] = easyDay - 1
+			days[1] = easyDay
+			days[2] = medDay
+			days[3] = easyDay
+			days[4] = easyDay - 1
+			days[6] = easyDay - 1
 		}
 	}
 
-	monday := m.Event{firstMonday, mondayMileage}
-	tuesday := m.Event{firstMonday.AddDate(0, 0, 1), tuesdayMileage}
-	wednesday := m.Event{firstMonday.AddDate(0, 0, 2), wednesdayMileage}
-	thursday := m.Event{firstMonday.AddDate(0, 0, 3), thursdayMileage}
-	friday := m.Event{firstMonday.AddDate(0, 0, 4), fridayMileage}
-	saturday := m.Event{firstMonday.AddDate(0, 0, 5), longDay}
-	sunday := m.Event{firstMonday.AddDate(0, 0, 6),  sundayMileage}
+	actualMileage := 0
+	weekDays := [7]m.Event{}
+	for i, day := range days {
+		actualMileage += day
+		dailyEvent := m.Event{Date: firstMonday.AddDate(0, 0, i), Description: distToStr(days[i])}
+		weekDays[i] = dailyEvent
+	}
+	diff := actualMileage - int(weeklyMileage)
+	if diff < 0 {
+
+	}
+	fmt.Printf("Actual Weekly Mileage: %v\n", actualMileage)
 
 	return &m.Week{
-		WeekStart: firstMonday,
-		Days: [7]m.Event{monday, tuesday, wednesday, thursday, friday, saturday, sunday},
+		WeekStart:     firstMonday,
+		Days:          weekDays,
+		TotalDistance: actualMileage,
 	}
+}
+
+func distToStr(dist int) string {
+	if dist == 0 {
+		return "Rest"
+	}
+	return fmt.Sprintf("%v", dist)
 }

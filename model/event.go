@@ -16,9 +16,12 @@ type Race struct {
 }
 
 type Options struct {
-	WeeklyMileage 	int 	`json:"weeklyMileage"`
-	BackToBacks		bool	`json:"backToBacks"`
-	RestDays		int 	`json:"restDays"`
+	WeeklyMileage int  `json:"weeklyMileage"`
+	BackToBacks   bool `json:"backToBacks"`
+	RestDays      int  `json:"restDays"`
+	WowIncrease   int  `json:"increase"`
+	RestWeekFreq  int  `json:"restWeekFreq"`
+	RestWeekLevel int  `json:"restWeekLevel"`
 }
 
 type RaceType int

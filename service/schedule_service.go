@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	m "github.com/oddball707/trainingCalendar/model"
-
 	"github.com/jordic/goics"
+
+	m "github.com/oddball707/trainingCalendar/model"
 )
 
 type Service struct {
@@ -37,7 +37,7 @@ func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
 }
 
 func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
-	log.Printf("Creating an ical for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
+	log.Printf("Creating an ical for a race on %s", r.RaceDate.Format(m.DateLayout))
 	weeks, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
@@ -130,13 +130,12 @@ func (s *Service) readRaceFile(r *m.Race) ([][]string, error) {
 	return lines, nil
 }
 
-
 func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 	monBeforeRace := PrevMonday(raceDate)
 	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
 }
 
 func generateSchedule(race *m.Race, o *m.Options) (schedule m.Schedule, err error) {
-	generator := NewGenerator(o.WeeklyMileage, o.RestDays, o.BackToBacks)
+	generator := NewGenerator(o)
 	return generator.CreateScheduleForRace(race)
 }
