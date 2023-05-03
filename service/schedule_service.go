@@ -6,6 +6,7 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/jordic/goics"
@@ -91,12 +92,18 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, er
 	// Loop through lines & turn into object
 	for _, line := range lines {
 		var days [7]m.Event
+		mileage := 0
 		for i, desc := range line {
-			days[i] = m.Event{firstMonday.AddDate(0, 0, i), desc}
+			dailydist, _ := strconv.Atoi(desc)
+			mileage += dailydist
+			days[i] = m.Event{Date: firstMonday.AddDate(0, 0, i), Description: desc}
 		}
+		wow := Increase(sched, mileage, 0.7)
 		wk := &m.Week{
-			WeekStart: firstMonday,
-			Days:      days,
+			WeekStart:     firstMonday,
+			Days:          days,
+			TotalDistance: mileage,
+			WowIncrease:   wow,
 		}
 		sched = append(sched, wk)
 		firstMonday = firstMonday.AddDate(0, 0, 7)

@@ -83,7 +83,7 @@ func (g *Generator) CreateScheduleForRace(r *m.Race) (m.Schedule, error) {
 			fmt.Printf("Target Weekly Mileage: %v\n", weeklyMileage)
 			week = g.generateWeek(firstMonday, weeklyMileage)
 		}
-		week.WowIncrease = g.increase(sched, week.TotalDistance)
+		week.WowIncrease = Increase(sched, week.TotalDistance, g.RestWeekLevel)
 		weeklyMileage += weeklyGrowth(weeklyMileage)
 
 		sched = append(sched, week)
@@ -100,14 +100,14 @@ func CreateScheduleStartingNow(totalLength int) (schedule *m.Schedule, err error
 	return nil, nil
 }
 
-func (g *Generator) increase(sched m.Schedule, actualMileage int) string {
+func Increase(sched m.Schedule, actualMileage int, restWeekLevel float64) string {
 	if len(sched) < 1 {
 		return "-"
 	}
 	wow := 1 - (float64(sched[len(sched)-1].TotalDistance) / float64(actualMileage))
 	if wow < 0 {
 		return "-"
-	} else if wow > (1 - g.RestWeekLevel) {
+	} else if wow > (1 - restWeekLevel) {
 		wow = 1 - (float64(sched[len(sched)-2].TotalDistance) / float64(actualMileage))
 	}
 	r, _ := regexp.Compile(`\.?0*$`)
@@ -225,10 +225,6 @@ func (g *Generator) generateWeek(firstMonday time.Time, weeklyMileage float64) *
 		actualMileage += day
 		dailyEvent := m.Event{Date: firstMonday.AddDate(0, 0, i), Description: distToStr(days[i])}
 		weekDays[i] = dailyEvent
-	}
-	diff := actualMileage - int(weeklyMileage)
-	if diff < 0 {
-
 	}
 	fmt.Printf("Actual Weekly Mileage: %v\n", actualMileage)
 
