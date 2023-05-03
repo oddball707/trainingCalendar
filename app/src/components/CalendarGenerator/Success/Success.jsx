@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 
 function Success() {
   return (
@@ -10,6 +10,15 @@ function Success() {
       <Typography variant="subtitle1">
         Thank you for using this tool!
       </Typography>
+      <Button
+        onClick={() => {
+          location.reload();
+        }}
+        variant="contained"
+        color="primary"
+      >
+        Back
+      </Button>
     </React.Fragment>
   );
 }
