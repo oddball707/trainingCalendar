@@ -95,7 +95,7 @@ export default function CalendarGenerator() {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Typography component="h1" variant="h4" align="center">
         Generate Training Calendar
       </Typography>
@@ -148,6 +148,6 @@ export default function CalendarGenerator() {
           </Formik>
         )}
       </React.Fragment>
-    </React.Fragment>
+    </>
   );
 }

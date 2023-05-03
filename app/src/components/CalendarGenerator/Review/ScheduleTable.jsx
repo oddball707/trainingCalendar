@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import useStyles from './styles';
 
 const classes = useStyles;
-const baseURL = process.env.REACT_APP_API_URL
+const baseURL = process.env.REACT_APP_API_URL || ''
 
 class ScheduleTable extends React.Component {
 
@@ -33,9 +33,12 @@ class ScheduleTable extends React.Component {
     const payload = {
       "date": moment(this.props.formValues.raceDate).format("MM/D/YY"),
       "type": this.props.formValues.raceType,
-      "weeklyMileage": this.props.formValues.weeklyMileage,
-      "backToBacks": this.props.formValues.backToBacks,
-      "restDays": this.props.formValues.restDays
+      "options":
+      {
+        "weeklyMileage": this.props.formValues.weeklyMileage,
+        "backToBacks": this.props.formValues.backToBacks,
+        "restDays": this.props.formValues.restDays
+      }
     }
     axios({
       url: `${baseURL}/api/show`,
@@ -46,6 +49,7 @@ class ScheduleTable extends React.Component {
       data: payload,
     }).then(response => {
       this.setState({ tableData: response.data });
+      console.log(this.state.tableData)
     });
   }
 
@@ -53,7 +57,7 @@ class ScheduleTable extends React.Component {
     const { tableData } = this.state;
     return (
       <TableContainer component={Paper}>
-      <Table className={classes.table} size="medium" aria-label="simple table">
+      <Table className={classes.table} size="large" aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Week</TableCell>
@@ -65,6 +69,8 @@ class ScheduleTable extends React.Component {
             <TableCell align="right">Friday</TableCell>
             <TableCell align="right">Saturday</TableCell>
             <TableCell align="right">Sunday</TableCell>
+            <TableCell align="right">Weekly Distance</TableCell>
+            <TableCell align="right">Increase over Previous Week</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -74,11 +80,13 @@ class ScheduleTable extends React.Component {
                 {weekNumber+1}
               </TableCell>
               <TableCell component="th" scope="row">
-                {new Date(week.weekStart).toDateString()}
+                {moment(new Date(week.weekStart)).format("M/DD")}
               </TableCell>
               {week.days.map(day => (
                 <TableCell align="right">{day.description}</TableCell>
               ))}
+              <TableCell component="th" scope="row">{week.totalDistance}</TableCell>
+              <TableCell component="th" scope="row">{week.wowIncrease}</TableCell>
             </TableRow>
           ))}
         </TableBody>

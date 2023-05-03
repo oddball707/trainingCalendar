@@ -20,8 +20,11 @@
     "moment": "^2.24.0",
     "react": "latest",
     "react-dom": "latest",
-    "react-scripts": "latest",
+    "react-icons": "^4.8.0",
     "yup": "^0.28.1"
+  },
+  "devDependencies": {
+    "react-scripts": "4.0.3"
   },
   "browserslist": {
     "production": [

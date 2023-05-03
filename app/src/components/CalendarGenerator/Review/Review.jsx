@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import ScheduleTable from './ScheduleTable';
 
 export default function Review() {
