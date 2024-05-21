@@ -3,11 +3,17 @@ import PropTypes from 'prop-types';
 import { at } from 'lodash';
 import { useField } from 'formik';
 import {
-  InputLabel,
+  Box,
+  FormLabel,
   FormControl,
-  Select,
-  MenuItem,
-  FormHelperText
+  RadioGroup,
+  Radio,
+  FormHelperText,
+  FormControlLabel,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
 } from '@material-ui/core';
 
 function SelectField(props) {
@@ -24,15 +30,30 @@ function SelectField(props) {
 
   return (
     <FormControl {...rest} error={isError}>
-      <InputLabel>{label}</InputLabel>
-      <Select {...field} value={selectedValue ? selectedValue : ''}>
-        {data.map((item, index) => (
-          <MenuItem key={index} value={item.value}>
-            {item.label}
-          </MenuItem>
-        ))}
-      </Select>
-      {_renderHelperText()}
+      <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+        defaultValue=''
+        name="radio-buttons-group"
+        value={selectedValue ? selectedValue : ''}
+      >
+      {data.map((item, index) => (
+        <Card sx={{ display: 'flex' }} >
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <CardActions sx={{ flex: '1 0 auto' }}>
+              <FormControlLabel value={item.value} control={<Radio />} />
+            </CardActions>
+          </Box>
+          <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography component="div" variant="h5">
+              {item.label}
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" component="div">
+              {item.description}
+            </Typography>
+          </CardContent>
+        </Card>
+      ))}
+      </RadioGroup>
     </FormControl>
   );
 }
