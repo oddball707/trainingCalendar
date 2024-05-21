@@ -37,7 +37,7 @@ function SelectField(props) {
         value={selectedValue ? selectedValue : ''}
       >
       {data.map((item, index) => (
-        <Card sx={{ display: 'flex' }} >
+        <Card key={index} sx={{ display: 'flex' }} >
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <CardActions sx={{ flex: '1 0 auto' }}>
               <FormControlLabel value={item.value} control={<Radio />} />
@@ -47,7 +47,7 @@ function SelectField(props) {
             <Typography component="div" variant="h5">
               {item.label}
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" component="div">
+            <Typography variant="subtitle1" color="secondary" component="div">
               {item.description}
             </Typography>
           </CardContent>
