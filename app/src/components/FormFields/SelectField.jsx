@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
-import { useField } from 'formik';
+import { useField, formik} from 'formik';
 import {
   Box,
   FormLabel,
@@ -18,7 +18,7 @@ import {
 
 function SelectField(props) {
   const { label, data, ...rest } = props;
-  const [field, meta] = useField(props);
+  const [field, meta, helpers] = useField(props);
   const { value: selectedValue } = field;
   const [touched, error] = at(meta, 'touched', 'error');
   const isError = touched && error && true;
@@ -28,13 +28,17 @@ function SelectField(props) {
     }
   }
 
+  const handleChange = (event) => {
+    helpers.setValue(event.target.value)
+  };
+
   return (
     <FormControl {...rest} error={isError}>
       <RadioGroup
         aria-labelledby="demo-radio-buttons-group-label"
-        defaultValue=''
         name="radio-buttons-group"
         value={selectedValue ? selectedValue : ''}
+        onChange={handleChange}
       >
       {data.map((item, index) => (
         <Card key={index} sx={{ display: 'flex' }} >
@@ -54,6 +58,7 @@ function SelectField(props) {
         </Card>
       ))}
       </RadioGroup>
+      {_renderHelperText()}
     </FormControl>
   );
 }

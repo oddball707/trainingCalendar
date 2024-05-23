@@ -54,17 +54,12 @@ export default function ScheduleForm(props) {
       <Typography variant="h5" gutterBottom>
         What type of race are you training for?
       </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <SelectField
-            name={raceType.name}
-            label={raceType.label}
-            data={raceTypes}
-            fullWidth
-          />
-        </Grid>
-      </Grid>
-      { formValues["raceType"] == 7 ?
+      <SelectField
+        name={raceType.name}
+        label={raceType.label}
+        data={raceTypes}
+      />
+      { formValues["raceType"] == '7' ?
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
             <Typography variant="h6" gutterBottom>
