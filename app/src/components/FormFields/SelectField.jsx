@@ -42,19 +42,19 @@ function SelectField(props) {
       >
       {data.map((item, index) => (
         <Card key={index} sx={{ display: 'flex' }} >
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <CardActions sx={{ flex: '1 0 auto' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+            <CardActions>
               <FormControlLabel value={item.value} control={<Radio />} />
             </CardActions>
+            <CardContent sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography component="div" variant="h5">
+                {item.label}
+              </Typography>
+              <Typography variant="subtitle1" color="secondary" component="div">
+                {item.description}
+              </Typography>
+            </CardContent>
           </Box>
-          <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography component="div" variant="h5">
-              {item.label}
-            </Typography>
-            <Typography variant="subtitle1" color="secondary" component="div">
-              {item.description}
-            </Typography>
-          </CardContent>
         </Card>
       ))}
       </RadioGroup>
