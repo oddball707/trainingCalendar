@@ -19,7 +19,7 @@ func main() {
 	help := flag.Bool("h", false, "Prints this help info")
 	flag.Parse()
 
-	if(*help) {
+	if *help {
 		fmt.Println("Usage: ")
 		flag.PrintDefaults()
 		os.Exit(0)
@@ -27,10 +27,9 @@ func main() {
 
 	// initialize service layer
 	srv := s.NewService()
-	hnd := h.NewHandler(srv)
 
 	if *cmd {
-		if( *recalcDate != "") {
+		if *recalcDate != "" {
 			raceDate, err := time.Parse(m.DateLayout, *recalcDate)
 			if err != nil {
 				fmt.Println("Improperly formated date: " + *recalcDate)
@@ -44,8 +43,8 @@ func main() {
 
 			options := &m.Options{
 				WeeklyMileage: 50,
-				RestDays: 2,
-				BackToBacks: true,
+				RestDays:      2,
+				BackToBacks:   true,
 			}
 
 			calFile, err := srv.CreateIcal(race, options)
@@ -58,24 +57,26 @@ func main() {
 			flag.PrintDefaults()
 		}
 
-
 	} else {
-		serve(srv, hnd)
+		serve(srv)
 	}
 }
 
-func serve(srv *s.Service, hnd *h.Handler) {
+func serve(srv *s.Service) {
+	hnd := h.NewHandler(srv)
 	router := hnd.NewRouter()
 	hnd.FileServer(router, "/", http.Dir("./web"))
 
 	http.Handle("/", router)
 	port := getEnv("PORT", "8080")
+
+	fmt.Println("Starting server...")
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		// cannot panic, because this probably is an intentional close
 		log.Printf("Httpserver: ListenAndServe() error: %s", err)
 	}
-	log.Printf("Service started on 0.0.0.0:8080")
+	fmt.Println("Service started on 0.0.0.0:8080")
 
 }
 

@@ -4,11 +4,11 @@ import CalendarGenerator from './components/CalendarGenerator';
 
 function App() {
   return (
-    <div>
+    <>
       <MaterialLayout>
         <CalendarGenerator />
       </MaterialLayout>
-    </div>
+    </>
   );
 }
 export default App;

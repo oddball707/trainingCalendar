@@ -1,18 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
-import { useField } from 'formik';
+import { useField, useFormikContext} from 'formik';
+import { NumberField, SwitchField } from './';
+
 import {
-  InputLabel,
+  Box,
   FormControl,
-  Select,
-  MenuItem,
-  FormHelperText
+  RadioGroup,
+  Radio,
+  FormHelperText,
+  FormControlLabel,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+  Grid,
 } from '@material-ui/core';
 
-function SelectField(props) {
-  const { label, data, ...rest } = props;
-  const [field, meta] = useField(props);
+function SelectRaceType(props) {
+  const { label, data, weeklyMileage, backToBacks, restDays, ...rest } = props;
+  const [field, meta, helpers] = useField(props);
+  const { values: formValues } = useFormikContext();
   const { value: selectedValue } = field;
   const [touched, error] = at(meta, 'touched', 'error');
   const isError = touched && error && true;
@@ -22,27 +31,74 @@ function SelectField(props) {
     }
   }
 
+  const handleChange = (event) => {
+    helpers.setValue(event.target.value)
+  };
+
   return (
     <FormControl {...rest} error={isError}>
-      <InputLabel>{label}</InputLabel>
-      <Select {...field} value={selectedValue ? selectedValue : ''}>
-        {data.map((item, index) => (
-          <MenuItem key={index} value={item.value}>
-            {item.label}
-          </MenuItem>
-        ))}
-      </Select>
+      <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+        name="radio-buttons-group"
+        value={selectedValue ? selectedValue : ''}
+        onChange={handleChange}
+      >
+      {data.map((item, index) => (
+        <Card key={index} sx={{ display: 'flex' }} >
+          <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+            <CardActions>
+              <FormControlLabel value={item.value} control={<Radio />} />
+            </CardActions>
+            <CardContent sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography component="div" variant="h5">
+                {item.label}
+              </Typography>
+              <Typography variant="subtitle1" color="secondary" component="div">
+                {item.description}
+              </Typography>
+            </CardContent>
+          </Box>
+          { formValues["raceType"] == '7' && item.value == '7' ?
+            <Grid container spacing={1}>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  What is your current weekly mileage?
+                </Typography>
+                <NumberField name={weeklyMileage.name}/>
+                <br/>
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  How many rest days do you want to schedule per week?
+                </Typography>
+                <NumberField name={restDays.name}/>
+                <br/>
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  Back to back long runs
+                </Typography>
+                <SwitchField name={backToBacks.name} />
+              </Grid>
+            </Grid>
+          : null }
+        </Card>
+      ))}
+      </RadioGroup>
       {_renderHelperText()}
     </FormControl>
   );
 }
 
-SelectField.defaultProps = {
+SelectRaceType.defaultProps = {
   data: []
 };
 
-SelectField.propTypes = {
+SelectRaceType.propTypes = {
   data: PropTypes.array.isRequired
 };
 
-export default SelectField;
+export default SelectRaceType;

@@ -6,11 +6,12 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
-	m "github.com/oddball707/trainingCalendar/model"
-
 	"github.com/jordic/goics"
+
+	m "github.com/oddball707/trainingCalendar/model"
 )
 
 type Service struct {
@@ -37,7 +38,7 @@ func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
 }
 
 func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
-	log.Printf("Creating an ical for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
+	log.Printf("Creating an ical for a race on %s", r.RaceDate.Format(m.DateLayout))
 	weeks, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
@@ -91,12 +92,18 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, er
 	// Loop through lines & turn into object
 	for _, line := range lines {
 		var days [7]m.Event
+		mileage := 0
 		for i, desc := range line {
-			days[i] = m.Event{firstMonday.AddDate(0, 0, i), desc}
+			dailydist, _ := strconv.Atoi(desc)
+			mileage += dailydist
+			days[i] = m.Event{Date: firstMonday.AddDate(0, 0, i), Description: desc}
 		}
+		wow := Increase(sched, mileage, 0.7)
 		wk := &m.Week{
-			WeekStart: firstMonday,
-			Days:      days,
+			WeekStart:     firstMonday,
+			Days:          days,
+			TotalDistance: mileage,
+			WowIncrease:   wow,
 		}
 		sched = append(sched, wk)
 		firstMonday = firstMonday.AddDate(0, 0, 7)
@@ -130,13 +137,12 @@ func (s *Service) readRaceFile(r *m.Race) ([][]string, error) {
 	return lines, nil
 }
 
-
 func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 	monBeforeRace := PrevMonday(raceDate)
 	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
 }
 
 func generateSchedule(race *m.Race, o *m.Options) (schedule m.Schedule, err error) {
-	generator := NewGenerator(o.WeeklyMileage, o.RestDays, o.BackToBacks)
+	generator := NewGenerator(o)
 	return generator.CreateScheduleForRace(race)
 }
