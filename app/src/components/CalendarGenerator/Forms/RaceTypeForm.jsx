@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormikContext, Formik } from 'formik';
 import { Grid, Typography, TextField, Switch } from '@material-ui/core';
-import { NumberField, SelectField, SwitchField } from '../../FormFields';
+import { SelectField } from '../../FormFields';
 const raceTypes = [
   {
     value: '1',
@@ -57,32 +57,11 @@ export default function ScheduleForm(props) {
       <SelectField
         name={raceType.name}
         label={raceType.label}
+        weeklyMileage = {weeklyMileage}
+        backToBacks = {backToBacks}
+        restDays = {restDays}
         data={raceTypes}
       />
-      { formValues["raceType"] == '7' ?
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={12}>
-            <Typography variant="h6" gutterBottom>
-              What is your current weekly mileage?
-            </Typography>
-            <br/>
-            <NumberField name={weeklyMileage.name}/>
-          </Grid>
-          <Grid item xs={12} md={12}>
-            <Typography variant="h6" gutterBottom>
-              How many rest days do you want to schedule per week?
-            </Typography>
-            <br/>
-            <NumberField name={restDays.name}/>
-          </Grid>
-          <Grid item xs={12} md={12}>
-            <Typography variant="h6" gutterBottom>
-              Back to back long runs
-            </Typography>
-            <SwitchField name={backToBacks.name} />
-          </Grid>
-        </Grid>
-      : null }
     </React.Fragment>
   );
 }

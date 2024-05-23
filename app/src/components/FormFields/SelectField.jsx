@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
-import { useField, formik} from 'formik';
+import { useField, useFormikContext} from 'formik';
+import { NumberField, SwitchField } from './';
+
 import {
   Box,
-  FormLabel,
   FormControl,
   RadioGroup,
   Radio,
@@ -14,11 +15,13 @@ import {
   CardActions,
   CardContent,
   Typography,
+  Grid,
 } from '@material-ui/core';
 
-function SelectField(props) {
-  const { label, data, ...rest } = props;
+function SelectRaceType(props) {
+  const { label, data, weeklyMileage, backToBacks, restDays, ...rest } = props;
   const [field, meta, helpers] = useField(props);
+  const { values: formValues } = useFormikContext();
   const { value: selectedValue } = field;
   const [touched, error] = at(meta, 'touched', 'error');
   const isError = touched && error && true;
@@ -55,6 +58,33 @@ function SelectField(props) {
               </Typography>
             </CardContent>
           </Box>
+          { formValues["raceType"] == '7' && item.value == '7' ?
+            <Grid container spacing={1}>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  What is your current weekly mileage?
+                </Typography>
+                <NumberField name={weeklyMileage.name}/>
+                <br/>
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  How many rest days do you want to schedule per week?
+                </Typography>
+                <NumberField name={restDays.name}/>
+                <br/>
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  Back to back long runs
+                </Typography>
+                <SwitchField name={backToBacks.name} />
+              </Grid>
+            </Grid>
+          : null }
         </Card>
       ))}
       </RadioGroup>
@@ -63,12 +93,12 @@ function SelectField(props) {
   );
 }
 
-SelectField.defaultProps = {
+SelectRaceType.defaultProps = {
   data: []
 };
 
-SelectField.propTypes = {
+SelectRaceType.propTypes = {
   data: PropTypes.array.isRequired
 };
 
-export default SelectField;
+export default SelectRaceType;
