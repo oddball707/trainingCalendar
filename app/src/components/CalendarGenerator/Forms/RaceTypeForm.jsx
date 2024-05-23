@@ -6,7 +6,7 @@ const raceTypes = [
   {
     value: '1',
     label: 'Half Marathon',
-    description: 'A 20 week schedule culminating in a half marathon. Suitable to jump into with very little current mileage, but should be able to run 15 miles/week to start'
+    description: 'A 12 week schedule culminating in a half marathon.You should be able to run 20 miles/week to start'
   },
   {
     value: '2',
@@ -17,23 +17,23 @@ const raceTypes = [
   {
     value: '3',
     label: '50K',
-    description: 'A 20 week schedule culminating in a 50k ultra. Should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
+    description: 'A 20 week schedule culminating in a 50k ultra. You should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
 
   },
   {
     value: '4',
     label: '50 Mile',
-    description: 'A 20 week schedule culminating in a 50 mile ultra. Should have a solid base coming into this schedule, and be comfortable running 20+ miles/week'
+    description: 'A 20 week schedule culminating in a 50 mile ultra. You should have a solid base coming into this schedule, and be comfortable running 20+ miles/week'
   },
   {
     value: '5',
     label: '100k',
-    description: 'A 20 week schedule culminating in a 100k ultra. Should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
+    description: 'A 20 week schedule culminating in a 100k ultra. You should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
   },
   {
     value: '6',
     label: '100 Mile',
-    description: 'A 27 week schedule culminating in a 100 mile ultra. Should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
+    description: 'A 27 week schedule culminating in a 100 mile ultra. You should have a solid base coming into this schedule, and be comfortable running 30+ miles/week'
 
   },
   {
