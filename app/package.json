@@ -24,7 +24,11 @@
     "yup": "^0.28.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "react-scripts": "^5.0.1"
+  },
+  "overrides": {
+    "typescript": "^5.0.3"
   },
   "browserslist": {
     "production": [
