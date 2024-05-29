@@ -26,13 +26,10 @@ func (w *Week) SetDistance() {
 		fmt.Println(day.Description)
 		mile, err := strconv.Atoi(strings.Trim(day.Description, " "))
 		if day.Description == "Rest" {
-			fmt.Println("RestDay, 0 miles")
 		} else if err != nil {
 			actualMileage += defaultWorkoutDistance
-			fmt.Println("Workout, 6 miles")
 		} else {
 			actualMileage += mile
-			fmt.Printf("General, %d miles\n", mile)
 		}
 	}
 	fmt.Printf("Actual Weekly Mileage: %v\n", actualMileage)
