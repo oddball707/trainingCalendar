@@ -83,6 +83,27 @@ function SelectRaceType(props) {
                 </Typography>
                 <SwitchField name={options.backToBacks.name} />
               </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.increase.label}
+                </Typography>
+                <NumberField name={options.increase.name} />
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.restWeekFreq.label}
+                </Typography>
+                <NumberField name={options.restWeekFreq.name} />
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.restWeekLevel.label}
+                </Typography>
+                <NumberField name={options.restWeekLevel.name} />
+              </Grid>
             </Grid>
           : null }
         </Card>

@@ -34,6 +34,7 @@ type ScheduleGenerator interface {
 }
 
 func NewGenerator(options *m.Options) *Generator {
+	fmt.Printf("Submitted Options: %v\n", options)
 	if options.RestWeekFreq == 0 {
 		options.RestWeekFreq = 4
 	}
