@@ -19,7 +19,7 @@ type Service struct {
 
 type ScheduleService interface {
 	GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error)
-	CreateIcal(r *m.Race, o *m.Options) (*os.File, error)
+	CreateIcal(r *m.Race, o *m.Options, f string) (*os.File, error)
 	LoadCalendar(r *m.Race, o *m.Options) (m.Schedule, error)
 }
 
@@ -36,7 +36,7 @@ func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
 	return &schedule, nil
 }
 
-func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
+func (s *Service) CreateIcal(r *m.Race, o *m.Options, filePath string) (*os.File, error) {
 	log.Printf("Creating an ical for a race on %s", r.RaceDate.Format(m.DateLayout))
 	weeks, err := s.LoadCalendar(r, o)
 	if err != nil {
@@ -47,7 +47,7 @@ func (s *Service) CreateIcal(r *m.Race, o *m.Options) (*os.File, error) {
 	enc := goics.NewICalEncode(b)
 	enc.Encode(weeks)
 
-	calFile := "/tmp/training.ics"
+	calFile := filePath + "/training.ics"
 	// err = os.MkdirAll("out", 0700)
 	// if err != nil {
 	// 	log.Print("Error creating out dir: " + err.Error())

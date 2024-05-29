@@ -122,7 +122,16 @@ func main() {
 
 		fmt.Printf("Creating calendar with your options: %v\n", options)
 
-		calFile, err := srv.CreateIcal(race, options)
+		var filePath string
+		fmt.Println("Where do you want to save your calendar? (Default ./)")
+		fmt.Scanln(&filePath)
+
+		if _, err := os.Stat(filePath); err != nil {
+			fmt.Println("Path does not exist, default to .")
+			filePath = "."
+		}
+
+		calFile, err := srv.CreateIcal(race, options, filePath)
 		if err != nil {
 			log.Printf("Issue creating ical: %v", err)
 		}
