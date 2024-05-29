@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
 
 	h "github.com/oddball707/trainingCalendar/handler"
 	m "github.com/oddball707/trainingCalendar/model"
@@ -36,15 +37,47 @@ func main() {
 				panic(err)
 			}
 
+			fmt.Println("What type of schedule do you want to generate?")
+			fmt.Println("1 - Half Marathon")
+			fmt.Println("2 - Marathon")
+			fmt.Println("3 - 50k")
+			fmt.Println("4 - 50M")
+			fmt.Println("5 - 100k")
+			fmt.Println("6 - 100M")
+			fmt.Println("7 - Dynamic")
+			fmt.Println("Enter number of your choice:")
+
+			var rType m.RaceType
+			fmt.Scanln(&rType)
+
 			race := &m.Race{
 				RaceDate: raceDate,
-				RaceType: m.Dynamic,
+				RaceType: m.RaceType(rType),
+			}
+
+			var weeklyMileage, restDays int
+			b2b := false
+			var b2bString string
+
+			if rType == m.Dynamic {
+				fmt.Println("How many miles are you running per week now?")
+				fmt.Scanln(&weeklyMileage)
+
+				fmt.Println("How rest days do you prefer each week? (1-4)")
+				fmt.Scanln(&restDays)
+
+				fmt.Println("Do you want back to back long runs on the weekend? (Y/N)")
+				fmt.Scanln(&b2bString)
+								
+				if strings.ToUpper(b2bString) == "Y" {
+					b2b = true
+				}
 			}
 
 			options := &m.Options{
-				WeeklyMileage: 50,
-				RestDays:      2,
-				BackToBacks:   true,
+				WeeklyMileage: weeklyMileage,
+				RestDays:      restDays,
+				BackToBacks:   b2b,
 			}
 
 			calFile, err := srv.CreateIcal(race, options)
