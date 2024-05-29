@@ -6,18 +6,6 @@ export default {
       label: 'Race Type*',
       requiredErrorMsg: 'Race type is required'
     },
-    weeklyMileage: {
-      name: 'weeklyMileage',
-      label: 'Current weeklyMileage*'
-    },
-    backToBacks: {
-      name: 'backToBacks',
-      label: 'Do you want to include back to back long runs?*'
-    },
-    restDays: {
-      name: 'restDays',
-      label: 'How many rest days per week?*'
-    },
     raceDate: {
       name: 'raceDate',
       label: 'Race Date*',
@@ -25,5 +13,21 @@ export default {
       futureErrorMsg: 'Race date must be in the future',
       weekendErrorMsg: 'Race date must be on a Saturday or Sunday'
     },
+    options: {
+      weeklyMileage: {
+        name: 'weeklyMileage',
+        label: 'What is your current weekly mileage?'
+      },
+      backToBacks: {
+        name: 'backToBacks',
+        label: 'Do you want to include back to back long runs?'
+      },
+      restDays: {
+        name: 'restDays',
+        label: 'How many rest days do you want to schedule per week?',
+        minWarning: 'Warning, it is suggested to have at least 1 rest day per week',
+        maxWarning: 'Warning, too many rest days'
+      },
+    }
   }
 };

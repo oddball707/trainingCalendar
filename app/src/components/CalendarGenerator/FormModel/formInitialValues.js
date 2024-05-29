@@ -3,16 +3,14 @@ const {
   formField: {
     raceType,
     raceDate,
-    weeklyMileage,
-    backToBacks,
-    restDays
+    options
   }
 } = formModel;
 
 export default {
   [raceType.name]: '',
   [raceDate.name]: '',
-  [weeklyMileage]: 15,
-  [backToBacks]: true,
-  [restDays]: 2
+  [options.weeklyMileage.name]: 15,
+  [options.backToBacks.name]: true,
+  [options.restDays.name]: 2
 };

@@ -5,9 +5,7 @@ const {
   formField: {
     raceType,
     raceDate,
-    weeklyMileage,
-    backToBacks,
-    restDays
+    options
   }
 } = formModel;
 
@@ -38,6 +36,6 @@ export default [
           }
         }
         return false;
-      }),    
+      }),
   })
 ];

@@ -4,7 +4,6 @@ import { Grid, TextField } from '@material-ui/core';
 
 export default function NumberField(props) {
     const [field, meta, helper] = useField(props);
-    const { setValue } = helper;
     const { value } = field;
     const { touched, error } = meta;
     const isError = touched && error && true;
@@ -15,13 +14,6 @@ export default function NumberField(props) {
             setSelection(value);
         }
     }, [value]);
-
-    function _onChange(val) {
-        if (val) {
-            setSelection(val);
-        }
-        setValue(val);
-    }
 
     return (
         <Grid container>

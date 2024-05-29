@@ -45,7 +45,7 @@ const raceTypes = [
 
 export default function ScheduleForm(props) {
   const {
-    formField: { raceType, weeklyMileage, backToBacks, restDays }
+    formField: { raceType, options }
   } = props;
   const { values: formValues } = useFormikContext();
 
@@ -57,9 +57,7 @@ export default function ScheduleForm(props) {
       <SelectField
         name={raceType.name}
         label={raceType.label}
-        weeklyMileage = {weeklyMileage}
-        backToBacks = {backToBacks}
-        restDays = {restDays}
+        options={options}
         data={raceTypes}
       />
     </React.Fragment>
