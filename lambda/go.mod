@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/aws/aws-lambda-go v1.37.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.14.0
-	github.com/oddball707/trainingCalendar v0.2.0
+	github.com/oddball707/trainingCalendar v1.0.0
 )
 
 require (
