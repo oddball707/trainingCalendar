@@ -155,8 +155,6 @@ func serve(srv *s.Service) {
 		// cannot panic, because this probably is an intentional close
 		log.Printf("Httpserver: ListenAndServe() error: %s", err)
 	}
-	fmt.Println("Service started on 0.0.0.0:8080")
-
 }
 
 func getEnv(key, fallback string) string {
