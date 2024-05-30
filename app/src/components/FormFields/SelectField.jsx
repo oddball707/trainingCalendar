@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
 import { useField, useFormikContext} from 'formik';
-import { NumberField, SwitchField } from './';
+import { NumberField, PercentField, SwitchField } from './';
 
 import {
   Box,
@@ -88,7 +88,7 @@ function SelectRaceType(props) {
                 <Typography variant="h6" gutterBottom>
                   {options.increase.label}
                 </Typography>
-                <NumberField name={options.increase.name} />
+                <PercentField name={options.increase.name} />
               </Grid>
               <Grid item xs={1} md={1}/>
               <Grid item xs={11} md={11}>
@@ -102,7 +102,7 @@ function SelectRaceType(props) {
                 <Typography variant="h6" gutterBottom>
                   {options.restWeekLevel.label}
                 </Typography>
-                <NumberField name={options.restWeekLevel.name} />
+                <PercentField name={options.restWeekLevel.name} />
               </Grid>
             </Grid>
           : null }
