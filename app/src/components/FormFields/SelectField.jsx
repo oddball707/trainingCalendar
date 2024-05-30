@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
 import { useField, useFormikContext} from 'formik';
-import { NumberField, SwitchField } from './';
+import { NumberField, PercentField, SwitchField } from './';
 
 import {
   Box,
@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 
 function SelectRaceType(props) {
-  const { label, data, weeklyMileage, backToBacks, restDays, ...rest } = props;
+  const { label, data, options, ...rest } = props;
   const [field, meta, helpers] = useField(props);
   const { values: formValues } = useFormikContext();
   const { value: selectedValue } = field;
@@ -63,25 +63,46 @@ function SelectRaceType(props) {
               <Grid item xs={1} md={1}/>
               <Grid item xs={11} md={11}>
                 <Typography variant="h6" gutterBottom>
-                  What is your current weekly mileage?
+                  {options.weeklyMileage.label}
                 </Typography>
-                <NumberField name={weeklyMileage.name}/>
+                <NumberField name={options.weeklyMileage.name}/>
                 <br/>
               </Grid>
               <Grid item xs={1} md={1}/>
               <Grid item xs={11} md={11}>
                 <Typography variant="h6" gutterBottom>
-                  How many rest days do you want to schedule per week?
+                  {options.restDays.label}
                 </Typography>
-                <NumberField name={restDays.name}/>
+                <NumberField name={options.restDays.name}/>
                 <br/>
               </Grid>
               <Grid item xs={1} md={1}/>
               <Grid item xs={11} md={11}>
                 <Typography variant="h6" gutterBottom>
-                  Back to back long runs
+                  {options.backToBacks.label}
                 </Typography>
-                <SwitchField name={backToBacks.name} />
+                <SwitchField name={options.backToBacks.name} />
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.increase.label}
+                </Typography>
+                <PercentField name={options.increase.name} />
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.restWeekFreq.label}
+                </Typography>
+                <NumberField name={options.restWeekFreq.name} />
+              </Grid>
+              <Grid item xs={1} md={1}/>
+              <Grid item xs={11} md={11}>
+                <Typography variant="h6" gutterBottom>
+                  {options.restWeekLevel.label}
+                </Typography>
+                <PercentField name={options.restWeekLevel.name} />
               </Grid>
             </Grid>
           : null }

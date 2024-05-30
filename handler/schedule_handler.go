@@ -12,7 +12,10 @@ import (
 	s "github.com/oddball707/trainingCalendar/service"
 )
 
-const out = "schedule.ics"
+const (
+	out                 = "schedule.ics"
+	defaultFileLocation = "/tmp"
+)
 
 type Handler struct {
 	service s.ScheduleService
@@ -49,7 +52,7 @@ func (h *Handler) CreateIcal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	calFile, err := h.service.CreateIcal(race, options)
+	calFile, err := h.service.CreateIcal(race, options, defaultFileLocation)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

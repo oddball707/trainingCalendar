@@ -15,7 +15,7 @@ To run dockerized:
 
 ## Command line
 There is also a command line interface if you have go installed locally
-You can run `go run main.go -cmd -h` to view available instructions, but running `go run main.go -cmd -date 10/07/2024` will prompt you with some questions and output a schedule, but not a .ics file (yet)
+You can run `go run main.go -cmd -h` to view available instructions, but running `make cmd` will prompt you with some questions and output a schedule as an .ics file
 
 
 # Deployment Info
@@ -25,7 +25,7 @@ You can run `go run main.go -cmd -h` to view available instructions, but running
     - see /main.tf
 
 ## Frontend
-    - AWS Amplify used for frontend deployments 
+    - AWS Amplify used for frontend deployments
     - tracks main branch, updates automatically on commit to master
 
 ## Backend

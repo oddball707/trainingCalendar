@@ -17,5 +17,5 @@ dev:
 npm:
 	cd app; npm start;
 
-heroku:
-	git push heroku master
+cmd:
+	go run main.go -cmd
