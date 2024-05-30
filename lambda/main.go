@@ -1,12 +1,12 @@
 package main
 
 import (
-	h "github.com/oddball707/trainingCalendar/handler"
-	s "github.com/oddball707/trainingCalendar/service"
+	"net/http"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
-	"net/http"
+	h "github.com/oddball707/trainingCalendar/handler"
+	s "github.com/oddball707/trainingCalendar/service"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	f := func(w http.ResponseWriter,  r *http.Request) {
+	f := func(w http.ResponseWriter, r *http.Request) {
 		router.ServeHTTP(w, r)
 	}
 

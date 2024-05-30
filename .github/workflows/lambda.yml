@@ -14,15 +14,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: 1.22
 
-      - name: Configure AWS Credentials  
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
-          
+
       - uses: webfactory/ssh-agent@v0.7.0
         with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -32,6 +32,6 @@ jobs:
           git config url.ssh://git@github.com/.insteadOf https://github.com/
           cd lambda
           go env -w GOPRIVATE="github.com/oddball707/"
-          GOOS=linux GOARCH=amd64 go build -o main main.go
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main main.go
           zip main.zip main ../data/*
           aws lambda update-function-code --function-name=training-calendar-generator --zip-file=fileb://main.zip
