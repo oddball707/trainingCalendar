@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { Grid, Slider } from '@material-ui/core';
 
 export default function PercentField(props) {
-    const [field, helpers] = useField(props.name);
+    const [field, _, helpers] = useField(props.name);
     const { setValue } = helpers;
     const { value } = field;
 
