@@ -28,6 +28,7 @@ type RaceType int
 
 const (
 	None RaceType = iota
+	FiveK
 	Half
 	Marathon
 	FiftyK
@@ -39,6 +40,8 @@ const (
 
 func (r RaceType) GetFile() string {
 	switch r {
+	case FiveK:
+		return "data/5k.csv"
 	case Half:
 		return "data/half.csv"
 	case Marathon:
@@ -57,6 +60,8 @@ func (r RaceType) GetFile() string {
 
 func (r RaceType) ToString() string {
 	switch r {
+	case FiveK:
+		return "5k"
 	case Half:
 		return "Half Marathon"
 	case Marathon:

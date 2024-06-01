@@ -41,13 +41,14 @@ func main() {
 		}
 
 		fmt.Println("What type of schedule do you want to generate?")
-		fmt.Println("1 - Half Marathon")
-		fmt.Println("2 - Marathon")
-		fmt.Println("3 - 50k")
-		fmt.Println("4 - 50M")
-		fmt.Println("5 - 100k")
-		fmt.Println("6 - 100M")
-		fmt.Println("7 - Dynamic")
+		fmt.Println("1 - 5k")
+		fmt.Println("2 - Half Marathon")
+		fmt.Println("3 - Marathon")
+		fmt.Println("4 - 50k")
+		fmt.Println("5 - 50M")
+		fmt.Println("6 - 100k")
+		fmt.Println("7 - 100M")
+		fmt.Println("8 - Dynamic")
 		fmt.Println("Enter number of your choice:")
 
 		var rType m.RaceType
