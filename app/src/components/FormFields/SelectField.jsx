@@ -58,7 +58,7 @@ function SelectRaceType(props) {
               </Typography>
             </CardContent>
           </Box>
-          { formValues["raceType"] == '7' && item.value == '7' ?
+          { formValues["raceType"] == '8' && item.value == '8' ?
             <Grid container spacing={1}>
               <Grid item xs={1} md={1}/>
               <Grid item xs={11} md={11}>
