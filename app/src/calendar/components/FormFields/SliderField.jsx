@@ -3,21 +3,22 @@ import { useField } from 'formik';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
-export default function PercentField(props) {
+export default function SmallNumberSliderField(props) {
+    const { max = 10, min = 0, step = 1, width = '50%' } = props;
     const [field, , helpers] = useField(props.name);
     const { setValue } = helpers;
     const { value } = field;
 
     function valuetext(value) {
-        return `${value}%`;
+        return `${value}`;
     }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-      };
+    };
 
     return (
-        <Box sx={{ width: '100%', px: 2 }}>
+        <Box sx={{ width: width, px: 2 }}>
             <Slider
                 {...field}
                 name={props.name}
@@ -26,9 +27,9 @@ export default function PercentField(props) {
                 valueLabelFormat={valuetext}
                 getAriaValueText={valuetext}
                 valueLabelDisplay="auto"
-                step={5}
-                min={0}
-                max={100}
+                step={step}
+                min={min}
+                max={max}
             />
         </Box>
     );

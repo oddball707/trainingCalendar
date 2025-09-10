@@ -17,6 +17,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import SliderField from './SliderField';
 
 function SelectRaceType(props) {
   const { label, data, options, ...rest } = props;
@@ -68,7 +69,7 @@ function SelectRaceType(props) {
                     <Typography variant="h6" gutterBottom>
                       {options.restDays.label}
                     </Typography>
-                    <NumberField name={options.restDays.name}/>
+                    <SliderField name={options.restDays.name} max={5} min={0} />
                   </Grid>
                   <Grid item>
                     <Typography variant="h6" gutterBottom>
@@ -86,7 +87,7 @@ function SelectRaceType(props) {
                     <Typography variant="h6" gutterBottom>
                       {options.restWeekFreq.label}
                     </Typography>
-                    <NumberField name={options.restWeekFreq.name} />
+                    <SliderField name={options.restWeekFreq.name} max={10} min={2} />
                   </Grid>
                   <Grid item>
                     <Typography variant="h6" gutterBottom>

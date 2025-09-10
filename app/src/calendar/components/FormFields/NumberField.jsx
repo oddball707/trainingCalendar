@@ -24,6 +24,9 @@ export default function NumberField(props) {
                 type="number"
                 error={isError}
                 value={selection}
+                size="small"
+                sx={{ maxWidth: 80 }}
+                inputProps={{ min: 0, style: { textAlign: 'center' } }}
             />
         </Grid>
     );
