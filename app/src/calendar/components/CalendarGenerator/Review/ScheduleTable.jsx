@@ -72,7 +72,7 @@ class ScheduleTable extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.map((week, weekNumber) => (
+            {(Array.isArray(tableData) ? tableData : []).map((week, weekNumber) => (
               <TableRow key={weekNumber}>
                 <TableCell component="th" scope="row">
                   {weekNumber + 1}
@@ -80,7 +80,7 @@ class ScheduleTable extends React.Component {
                 <TableCell component="th" scope="row">
                   {moment(new Date(week.weekStart)).format('M/DD')}
                 </TableCell>
-                {week.days.map((day, idx) => (
+                {(Array.isArray(week.days) ? week.days : []).map((day, idx) => (
                   <TableCell align="right" key={idx}>{day.description}</TableCell>
                 ))}
                 <TableCell component="th" scope="row">{week.totalDistance}</TableCell>
