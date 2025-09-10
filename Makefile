@@ -1,7 +1,7 @@
 build:
 	docker build --file=./Dockerfile --rm=true -t training-cal .
 
-run:
+run: build
 	docker run -p 3000:8080 -d training-cal
 
 run-dev:
