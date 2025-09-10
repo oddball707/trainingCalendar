@@ -25,7 +25,8 @@ func (w *Week) SetDistance() {
 	for _, day := range w.Days {
 		fmt.Println(day.Description)
 		mile, err := strconv.Atoi(strings.Trim(day.Description, " "))
-		if day.Description == "Rest" {
+		if strings.ToLower(day.Description) == "rest" || strings.ToLower(day.Description) == "crosstrain" || strings.ToLower(day.Description) == "cross" {
+			continue
 		} else if err != nil {
 			actualMileage += defaultWorkoutDistance
 		} else {
