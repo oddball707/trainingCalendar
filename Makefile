@@ -11,9 +11,6 @@ build-go:
 build-npm:
 	cd app;	npm install; npm run build;
 
-dev:
-	go run main.go
-
 npm:
 	cd app; npm start;
 

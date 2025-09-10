@@ -1,6 +1,6 @@
 module github.com/oddball707/trainingCalendar
 
-go 1.22
+go 1.25
 
 require (
 	github.com/go-chi/chi v1.5.4
