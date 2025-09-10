@@ -57,7 +57,7 @@ function SelectRaceType(props) {
               <Typography variant="subtitle1" color="secondary" component="div">
                 {item.description}
               </Typography>
-              <Collapse in={formValues["raceType"] == '7' && item.value == '7'} timeout="auto" unmountOnExit>
+              <Collapse in={formValues["raceType"] === '7' && item.value === '7'} timeout="auto" unmountOnExit>
                 <Grid container direction="column" spacing={2} >
                   <Grid item>
                     <Typography variant="h6" gutterBottom>
