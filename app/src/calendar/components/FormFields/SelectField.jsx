@@ -1,4 +1,5 @@
 import React from 'react';
+import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
 import { at } from 'lodash';
 import { useField, useFormikContext} from 'formik';
@@ -43,68 +44,60 @@ function SelectRaceType(props) {
         onChange={handleChange}
       >
       {data.map((item, index) => (
-        <Card key={index} sx={{ display: 'flex' }} >
-          <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-            <CardActions>
+        <Card key={index} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }} >
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+            <CardActions sx={{ pt: 2, pb: 0, pl: 0, pr: 0 }}>
               <FormControlLabel value={item.value} control={<Radio />} />
             </CardActions>
-            <CardContent sx={{ display: 'flex', flexDirection: 'row' }}>
+            <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%', pt: 2, pb: 0 }}>
               <Typography component="div" variant="h5">
                 {item.label}
               </Typography>
               <Typography variant="subtitle1" color="secondary" component="div">
                 {item.description}
               </Typography>
+              <Collapse in={formValues["raceType"] == '7' && item.value == '7'} timeout="auto" unmountOnExit>
+                <Grid container direction="column" spacing={2} >
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.weeklyMileage.label}
+                    </Typography>
+                    <NumberField name={options.weeklyMileage.name}/>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.restDays.label}
+                    </Typography>
+                    <NumberField name={options.restDays.name}/>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.backToBacks.label}
+                    </Typography>
+                    <SwitchField name={options.backToBacks.name} />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.increase.label}
+                    </Typography>
+                    <PercentField name={options.increase.name} />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.restWeekFreq.label}
+                    </Typography>
+                    <NumberField name={options.restWeekFreq.name} />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.restWeekLevel.label}
+                    </Typography>
+                    <PercentField name={options.restWeekLevel.name} />
+                  </Grid>
+                </Grid>
+              </Collapse>
             </CardContent>
           </Box>
-          { formValues["raceType"] == '7' && item.value == '7' ?
-            <Grid container spacing={1}>
-              <Grid />
-              <Grid>
-                <Typography variant="h6" gutterBottom>
-                  {options.weeklyMileage.label}
-                </Typography>
-                <NumberField name={options.weeklyMileage.name}/>
-                <br/>
-              </Grid>
-              <Grid />
-              <Grid>
-                <Typography variant="h6" gutterBottom>
-                  {options.restDays.label}
-                </Typography>
-                <NumberField name={options.restDays.name}/>
-                <br/>
-              </Grid>
-              <Grid />
-              <Grid>
-                <Typography variant="h6" gutterBottom>
-                  {options.backToBacks.label}
-                </Typography>
-                <SwitchField name={options.backToBacks.name} />
-              </Grid>
-              <Grid />
-              <Grid>
-                <Typography variant="h6" gutterBottom>
-                  {options.increase.label}
-                </Typography>
-                <PercentField name={options.increase.name} />
-              </Grid>
-              <Grid />
-              <Grid>
-                <Typography variant="h6" gutterBottom>
-                  {options.restWeekFreq.label}
-                </Typography>
-                <NumberField name={options.restWeekFreq.name} />
-              </Grid>
-              <Grid item xs={1} md={1}/>
-              <Grid item xs={11} md={11}>
-                <Typography variant="h6" gutterBottom>
-                  {options.restWeekLevel.label}
-                </Typography>
-                <PercentField name={options.restWeekLevel.name} />
-              </Grid>
-            </Grid>
-          : null }
         </Card>
       ))}
       </RadioGroup>
