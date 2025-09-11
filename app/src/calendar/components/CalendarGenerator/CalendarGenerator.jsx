@@ -22,7 +22,7 @@ import useStyles from './styles';
 
 const steps = ['Race Type', 'Date', 'Review'];
 const { formId, formField } = formModel;
-const baseURL = import.meta.env.VITE_API_URL || '';
+const baseURL = import.meta.env.REACT_APP_API_URL || '';
 
 function _renderStepContent(step) {
   switch (step) {

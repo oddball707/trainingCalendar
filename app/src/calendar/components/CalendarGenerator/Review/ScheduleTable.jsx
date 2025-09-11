@@ -12,7 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import useStyles from './styles';
 
-const baseURL = import.meta.env.VITE_API_URL || '';
+const baseURL = import.meta.env.REACT_APP_API_URL || '';
 
 class ScheduleTable extends React.Component {
   constructor(props) {
