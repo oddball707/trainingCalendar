@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import useStyles from './styles';
 
 const baseURL = import.meta.env.REACT_APP_API_URL || '';
+console.log('API URL:', baseURL);
 
 class ScheduleTable extends React.Component {
   constructor(props) {
