@@ -15,7 +15,7 @@ build-npm:
 	cd app;	npm install; npm run build;
 
 npm:
-	cd app; npm run dev;
+	cd app; VITE_API_URL=http://localhost:8080 npm run dev;
 
 cmd:
 	go run main.go -cmd
