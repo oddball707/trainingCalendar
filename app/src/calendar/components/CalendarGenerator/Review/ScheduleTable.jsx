@@ -13,7 +13,6 @@ import Paper from '@mui/material/Paper';
 import useStyles from './styles';
 
 const baseURL = import.meta.env.VITE_API_URL || '';
-console.log('API URL:', baseURL);
 
 class ScheduleTable extends React.Component {
   constructor(props) {
@@ -87,10 +86,10 @@ class ScheduleTable extends React.Component {
                     <TableCell align="center" key={idx}>{day.description}</TableCell>
                   ))}
                   {raceType !== '1' && (
-                    <TableCell  align="center" component="th" scope="row">{week.totalDistance}</TableCell>
+                    <TableCell align="center" component="th" scope="row">{week.totalDistance}</TableCell>
                   )}
                   {raceType !== '1' && (
-                    <TableCell  align="center" component="th" scope="row">{week.wowIncrease}</TableCell>
+                    <TableCell align="center" component="th" scope="row">{week.wowIncrease}</TableCell>
                   )}
                 </TableRow>
               ))}
