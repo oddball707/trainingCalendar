@@ -120,7 +120,7 @@ func (g *Generator) setTaper(sched m.Schedule, weeklyMileage float64) m.Schedule
 	lastMonday := sched[len(sched)-1].WeekStart
 	taper := g.generateWeek(secondlastWeek.WeekStart, weeklyMileage/3)
 	taper.SetDistance()
-	taper.WowIncrease = "--taper--"
+	taper.WowIncrease = "-"
 
 	monday := m.Event{Date: lastMonday, Description: "Rest"}
 	tuesday := m.Event{Date: lastMonday.AddDate(0, 0, 1), Description: "2"}
