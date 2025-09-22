@@ -3,6 +3,12 @@ Generate training calendars
 
 # Getting Started
 
+## Requirements
+- Go
+- Docker (optional)
+- npm
+- react-scripts
+
 To run without docker, and see all logs, in two separate terminals:
 Run `make dev`
     - runs backend locally

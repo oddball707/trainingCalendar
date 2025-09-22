@@ -1,8 +1,11 @@
 build:
 	docker build --file=./Dockerfile --rm=true -t training-cal .
 
-run:
+run: build
 	docker run -p 3000:8080 -d training-cal
+
+run-dev:
+	go run main.go
 
 build-go:
 	go mod download
@@ -12,7 +15,7 @@ build-npm:
 	cd app;	npm install; npm run build;
 
 npm:
-	cd app; npm start;
+	cd app; VITE_API_URL=http://localhost:8080 npm run dev;
 
 cmd:
 	go run main.go -cmd
