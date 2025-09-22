@@ -329,6 +329,8 @@ github.com/oddball707/trainingCalendar v1.0.0 h1:MtCEDlQAb+upwEdMISnbMZLVn4WLEes
 github.com/oddball707/trainingCalendar v1.0.0/go.mod h1:Z2TBOLWXWfGZXB2e/zEQXeMazpmeajQxz4nHL8ZY/wg=
 github.com/oddball707/trainingCalendar v1.1.1 h1:oZKovX+Fhe1ZDUzgjLskrnB9pCkUnQEVqsPyrgb/Flw=
 github.com/oddball707/trainingCalendar v1.1.1/go.mod h1:iImD0stgtNqfhT6uAwvHNFH+JbQzjku+0gPxNcjiDtU=
+github.com/oddball707/trainingCalendar v1.2.0 h1:X4QbuxY1Kxo1+LeqJ35sG1a9SnWA5Tf7+O1CmFz+0JY=
+github.com/oddball707/trainingCalendar v1.2.0/go.mod h1:iImD0stgtNqfhT6uAwvHNFH+JbQzjku+0gPxNcjiDtU=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.1/go.mod h1:zj2OWP4+oCPe1qIXoGWkgMRwljMUYCdkwsT2108oapk=
 github.com/onsi/ginkgo v1.16.4/go.mod h1:dX+/inL/fNMqNlz0e9LfyB9TswhZpCVdJM/Z6Vvnwo0=
