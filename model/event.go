@@ -7,7 +7,9 @@ import (
 // Event is a date entry with the date and description
 type Event struct {
 	Date        time.Time `json:"date"`
+	Title       string    `json:"title"`
 	Description string    `json:"description"`
+	Distance    int       `json:"distance"`
 }
 
 type Race struct {
@@ -25,6 +27,24 @@ type Options struct {
 }
 
 type RaceType int
+
+func (r RaceType) GetRaceDistance() int {
+	switch r {
+	case Half:
+		return 13
+	case Marathon:
+		return 26
+	case FiftyK:
+		return 31
+	case FifyM:
+		return 50
+	case HundredK:
+		return 62
+	case HundredM:
+		return 100
+	}
+	return 26
+}
 
 const (
 	None RaceType = iota

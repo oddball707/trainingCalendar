@@ -6,6 +6,7 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/jordic/goics"
@@ -92,7 +93,12 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, er
 	for _, line := range lines {
 		var days [7]m.Event
 		for i, desc := range line {
-			days[i] = m.Event{Date: firstMonday.AddDate(0, 0, i), Description: desc}
+			dist, err := strconv.Atoi(desc)
+			if err != nil {
+				log.Print("Error converting calendar entry to distance: " + desc + "; " + err.Error())
+				return nil, err
+			}
+			days[i] = m.Event{Date: firstMonday.AddDate(0, 0, i), Title: desc, Distance: dist}
 		}
 
 		wk := &m.Week{
@@ -139,6 +145,6 @@ func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 }
 
 func generateSchedule(race *m.Race, o *m.Options) (schedule m.Schedule, err error) {
-	generator := NewGenerator(o)
-	return generator.CreateScheduleForRace(race)
+	generator := NewGenerator(o, race)
+	return generator.CreateScheduleForRace()
 }
