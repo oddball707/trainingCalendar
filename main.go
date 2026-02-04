@@ -41,22 +41,21 @@ func main() {
 		}
 
 		fmt.Println("What type of schedule do you want to generate?")
-		fmt.Println("1 - Half Marathon")
-		fmt.Println("2 - Marathon")
-		fmt.Println("3 - 50k")
-		fmt.Println("4 - 50M")
-		fmt.Println("5 - 100k")
-		fmt.Println("6 - 100M")
-		fmt.Println("7 - Dynamic")
+		fmt.Println("1 - 5k")
+		fmt.Println("2 - Half Marathon")
+		fmt.Println("3 - Marathon")
+		fmt.Println("4 - 50k")
+		fmt.Println("5 - 50M")
+		fmt.Println("6 - 100k")
+		fmt.Println("7 - 100M")
+		fmt.Println("8 - Dynamic")
 		fmt.Println("Enter number of your choice:")
 
 		var rType m.RaceType
 		fmt.Scanln(&rType)
 
-		race := &m.Race{
-			RaceDate: raceDate,
-			RaceType: m.RaceType(rType),
-		}
+		race := m.RaceTypeMap[rType]
+		race.Date = raceDate
 
 		var weeklyMileage, restDays, wowIncrease, restWeekFreq, restWeekLevel int
 		b2b := false
@@ -111,7 +110,7 @@ func main() {
 			}
 		}
 
-		options := &m.Options{
+		options := &m.DynamicOptions{
 			WeeklyMileage: weeklyMileage,
 			RestDays:      restDays,
 			BackToBacks:   b2b,
@@ -120,14 +119,12 @@ func main() {
 			RestWeekLevel: restWeekLevel,
 		}
 
-		fmt.Printf("Creating calendar with your options: %v\n", options)
-
 		var filePath string
 		fmt.Println("Where do you want to save your calendar? (Default ./)")
 		fmt.Scanln(&filePath)
 
 		if _, err := os.Stat(filePath); err != nil {
-			fmt.Println("Path does not exist, default to .")
+			fmt.Println("Defaulting to ./")
 			filePath = "."
 		}
 

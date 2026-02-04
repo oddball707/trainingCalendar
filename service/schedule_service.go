@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -19,17 +20,17 @@ type Service struct {
 }
 
 type ScheduleService interface {
-	GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error)
-	CreateIcal(r *m.Race, o *m.Options, f string) (*os.File, error)
-	LoadCalendar(r *m.Race, o *m.Options) (m.Schedule, error)
+	GetSchedule(r *m.Race, o *m.DynamicOptions) (*m.Schedule, error)
+	CreateIcal(r *m.Race, o *m.DynamicOptions, f string) (*os.File, error)
+	LoadCalendar(r *m.Race, o *m.DynamicOptions) (m.Schedule, error)
 }
 
 func NewService() *Service {
 	return &Service{}
 }
 
-func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
-	log.Printf("Creating schedule for a %s that starts on %s", r.RaceType.ToString(), r.RaceDate.Format(m.DateLayout))
+func (s *Service) GetSchedule(r *m.Race, o *m.DynamicOptions) (*m.Schedule, error) {
+	log.Printf("Creating schedule for a %s that starts on %s", r.Name, r.Date.Format(m.DateLayout))
 	schedule, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
@@ -37,8 +38,8 @@ func (s *Service) GetSchedule(r *m.Race, o *m.Options) (*m.Schedule, error) {
 	return &schedule, nil
 }
 
-func (s *Service) CreateIcal(r *m.Race, o *m.Options, filePath string) (*os.File, error) {
-	log.Printf("Creating an ical for a race on %s", r.RaceDate.Format(m.DateLayout))
+func (s *Service) CreateIcal(r *m.Race, o *m.DynamicOptions, filePath string) (*os.File, error) {
+	log.Printf("Creating an ical for a %s race on %s", r.Name, r.Date.Format(m.DateLayout))
 	weeks, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err
@@ -77,28 +78,53 @@ func (s *Service) CreateIcal(r *m.Race, o *m.Options, filePath string) (*os.File
 	return f, nil
 }
 
-func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, error) {
-	if race.RaceType == m.Dynamic {
+func (s *Service) LoadCalendar(race *m.Race, options *m.DynamicOptions) (m.Schedule, error) {
+	if race.Type == m.Dynamic {
 		return generateSchedule(race, options)
 	}
-	lines, err := s.readRaceFile(race)
+
+	mainLines, err := s.readRaceFile(race.RaceFiles.TitlesFile)
 	if err != nil {
 		return nil, err
 	}
 
-	firstMonday := s.startDate(race.RaceDate, len(lines))
+	descLines, err := s.readRaceFile(race.RaceFiles.DescriptionsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	distLines, err := s.readRaceFile(race.RaceFiles.DistancesFile)
+	if err != nil {
+		return nil, err
+	} else if distLines == nil {
+		log.Print("No distances file, using main file for distances")
+		distLines = mainLines
+	}
+
+	firstMonday := s.startDate(race.Date, len(mainLines))
 	var sched m.Schedule
 
 	// Loop through lines & turn into object
-	for _, line := range lines {
+	for week, line := range mainLines {
 		var days [7]m.Event
-		for i, desc := range line {
-			dist, err := strconv.Atoi(desc)
+		var weeksDescriptions []string
+
+		weeksDistances := distLines[week]
+		fmt.Printf("Week %d distances: %v\n", week, weeksDistances)
+		if descLines != nil {
+			weeksDescriptions = descLines[week]
+		}
+		for day, title := range line {
+			dist, err := strconv.Atoi(weeksDistances[day])
 			if err != nil {
-				log.Print("Error converting calendar entry to distance: " + desc + "; " + err.Error())
+				log.Print("Error converting calendar entry to distance: " + weeksDistances[day] + "; " + err.Error())
 				return nil, err
 			}
-			days[i] = m.Event{Date: firstMonday.AddDate(0, 0, i), Title: desc, Distance: dist}
+			days[day] = m.Event{Date: firstMonday.AddDate(0, 0, day), Title: title, Distance: dist}
+
+			if weeksDescriptions != nil && weeksDescriptions[day] != "" {
+				days[day].Description = weeksDescriptions[day]
+			}
 		}
 
 		wk := &m.Week{
@@ -114,10 +140,14 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.Options) (m.Schedule, er
 	return sched, nil
 }
 
-func (s *Service) readRaceFile(r *m.Race) ([][]string, error) {
-	f, err := os.Open(r.RaceType.GetFile())
+func (s *Service) readRaceFile(path string) ([][]string, error) {
+	if path == "" {
+		return nil, nil
+	}
+
+	f, err := os.Open(path)
 	if err != nil {
-		log.Print("Failed to open csv file: " + r.RaceType.GetFile())
+		log.Print("Failed to open csv file: " + path)
 		return nil, err
 	}
 	defer f.Close()
@@ -144,7 +174,7 @@ func (s *Service) startDate(raceDate time.Time, weeksInSched int) time.Time {
 	return monBeforeRace.AddDate(0, 0, (weeksInSched-1)*-7)
 }
 
-func generateSchedule(race *m.Race, o *m.Options) (schedule m.Schedule, err error) {
+func generateSchedule(race *m.Race, o *m.DynamicOptions) (schedule m.Schedule, err error) {
 	generator := NewGenerator(o, race)
 	return generator.CreateScheduleForRace()
 }

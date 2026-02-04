@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -23,15 +22,11 @@ const defaultWorkoutDistance = 6
 func (w *Week) SetDistance() {
 	actualMileage := 0
 	for _, day := range w.Days {
-		fmt.Println(day.Description)
-		mile, err := strconv.Atoi(strings.Trim(day.Description, " "))
-		if strings.ToLower(day.Description) == "rest" || strings.ToLower(day.Description) == "crosstrain" || strings.ToLower(day.Description) == "cross" {
-			continue
-		} else if err != nil {
-			actualMileage += defaultWorkoutDistance
-		} else {
-			actualMileage += mile
-		}
+		fmt.Println("Title: " + day.Title)
+		fmt.Println("Description: " + day.Description)
+		fmt.Println("Distance: " + strconv.Itoa(day.Distance))
+
+		actualMileage += day.Distance
 	}
 	fmt.Printf("Actual Weekly Mileage: %v\n", actualMileage)
 	w.TotalDistance = actualMileage

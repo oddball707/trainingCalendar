@@ -34,7 +34,7 @@ type ScheduleGenerator interface {
 	CreateScheduleStartingNow(totalLength int) (m.Schedule, error)
 }
 
-func NewGenerator(options *m.Options, race *m.Race) *Generator {
+func NewGenerator(options *m.DynamicOptions, race *m.Race) *Generator {
 	fmt.Printf("Submitted Options: %v\n", options)
 	if options.RestWeekFreq == 0 {
 		options.RestWeekFreq = 4
@@ -68,7 +68,7 @@ func (g *Generator) CreateScheduleForRace() (m.Schedule, error) {
 
 	weekNumber := 1
 	firstMonday := NextMonday(time.Now())
-	lastMonday := PrevMonday(g.Race.RaceDate)
+	lastMonday := PrevMonday(g.Race.Date)
 
 	totalLength := int(lastMonday.Sub(firstMonday).Hours() / 24 / 7)
 
@@ -76,7 +76,7 @@ func (g *Generator) CreateScheduleForRace() (m.Schedule, error) {
 	fmt.Printf("Total weeks in schedule: %v\n", totalLength)
 	fmt.Printf("Last week starts on %v\n", lastMonday)
 	var sched m.Schedule
-	for firstMonday.Before(g.Race.RaceDate) {
+	for firstMonday.Before(g.Race.Date) {
 		fmt.Printf("Week # %v\n", weekNumber)
 		var week *m.Week
 		if weekNumber%g.RestWeekFreq == 0 {
@@ -129,7 +129,7 @@ func (g *Generator) setTaper(sched m.Schedule, weeklyMileage float64) m.Schedule
 	wednesday := m.Event{Date: lastMonday.AddDate(0, 0, 2), Title: "3", Distance: 3}
 	thursday := m.Event{Date: lastMonday.AddDate(0, 0, 3), Title: "Rest", Distance: 0}
 	friday := m.Event{Date: lastMonday.AddDate(0, 0, 4), Title: "2", Distance: 2}
-	saturday := m.Event{Date: lastMonday.AddDate(0, 0, 5), Title: "Race Day!", Distance: g.Race.RaceType.GetRaceDistance()}
+	saturday := m.Event{Date: lastMonday.AddDate(0, 0, 5), Title: "Race Day!", Distance: g.Race.Distance}
 	sunday := m.Event{Date: lastMonday.AddDate(0, 0, 6), Title: "Rest", Distance: 0}
 
 	raceWeek := &m.Week{
