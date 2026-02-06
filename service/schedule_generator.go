@@ -129,7 +129,7 @@ func (g *Generator) setTaper(sched m.Schedule, weeklyMileage float64) m.Schedule
 	wednesday := m.Event{Date: lastMonday.AddDate(0, 0, 2), Title: "3", Distance: 3}
 	thursday := m.Event{Date: lastMonday.AddDate(0, 0, 3), Title: "Rest", Distance: 0}
 	friday := m.Event{Date: lastMonday.AddDate(0, 0, 4), Title: "2", Distance: 2}
-	saturday := m.Event{Date: lastMonday.AddDate(0, 0, 5), Title: "Race Day!", Distance: g.Race.Distance}
+	saturday := m.Event{Date: lastMonday.AddDate(0, 0, 5), Title: "Race Day!", Distance: int(g.Race.Distance)}
 	sunday := m.Event{Date: lastMonday.AddDate(0, 0, 6), Title: "Rest", Distance: 0}
 
 	raceWeek := &m.Week{

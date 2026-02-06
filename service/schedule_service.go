@@ -123,7 +123,8 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.DynamicOptions) (m.Sched
 			days[day] = m.Event{Date: firstMonday.AddDate(0, 0, day), Title: title, Distance: dist}
 
 			if weeksDescriptions != nil && weeksDescriptions[day] != "" {
-				days[day].Description = weeksDescriptions[day]
+				desc := SetDescription(weeksDescriptions[day], race.Distance, options.GoalTime)
+				days[day].Description = desc
 			}
 		}
 

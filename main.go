@@ -60,8 +60,12 @@ func main() {
 		var weeklyMileage, restDays, wowIncrease, restWeekFreq, restWeekLevel int
 		b2b := false
 		var b2bString string
+		var goalTime float64
 
-		if rType == m.Dynamic {
+		if rType == m.FiveK {
+			fmt.Println("What is your goal time for the 5k? (in minutes, e.g. 25.5)")
+			fmt.Scanln(&goalTime)
+		} else if rType == m.Dynamic {
 			fmt.Println("How many miles are you running per week now?")
 			fmt.Scanln(&weeklyMileage)
 
@@ -110,7 +114,9 @@ func main() {
 			}
 		}
 
+
 		options := &m.DynamicOptions{
+			GoalTime: goalTime,
 			WeeklyMileage: weeklyMileage,
 			RestDays:      restDays,
 			BackToBacks:   b2b,

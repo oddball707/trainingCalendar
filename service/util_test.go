@@ -3,6 +3,7 @@ package service
 import (
 	"testing"
 	"time"
+
 	m "github.com/oddball707/trainingCalendar/model"
 
 	"github.com/stretchr/testify/assert"
@@ -110,6 +111,119 @@ func TestNextMonday(t *testing.T) {
 			expected, _ := time.Parse(m.DateLayout, tc.expected)
 			actual := NextMonday(day)
 			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
+func TestFloatToPace(t *testing.T) {
+	testCases := []struct {
+		testName string
+		pace     float64
+		expected string
+	}{
+		{
+			testName: "exact minutes",
+			pace:     5.0,
+			expected: "5:00",
+		},
+		{
+			testName: "minutes and seconds",
+			pace:     5.5,
+			expected: "5:30",
+		},
+		{
+			testName: "minutes and seconds with rounding",
+			pace:     5.79,
+			expected: "5:47",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.testName, func(t *testing.T) {
+			actual := FloatToPace(tc.pace)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
+func TestSetDescription(t *testing.T) {
+	testCases := []struct {
+		testName     string
+		desc         string
+		raceLength   float64
+		goalTime     float64
+		expectedDesc string
+	}{
+		{
+			testName:     "no placeholder",
+			desc:         "Run 5 miles",
+			raceLength:   5,
+			goalTime:     25.0,
+			expectedDesc: "Run 5 miles",
+		},
+		{
+			testName:     "with placeholder",
+			desc:         "Run 5 miles at <rp> pace",
+			raceLength:   5,
+			goalTime:     25.0,
+			expectedDesc: "Run 5 miles at 5:00 pace",
+		},
+		{
+			testName:     "with placeholder and modifier",
+			desc:         "5x600m@<112%rp>;2min recovery",
+			raceLength:   3.1,
+			goalTime:     20.0,
+			expectedDesc: "5x600m@5:45;2min recovery",
+		},
+		{
+			testName:     "with placeholder and modifier",
+			desc:         "5x600m@<103%rp>;2min recovery",
+			raceLength:   3.1,
+			goalTime:     20.0,
+			expectedDesc: "5x600m@6:15;2min recovery",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.testName, func(t *testing.T) {
+			actual := SetDescription(tc.desc, tc.raceLength, tc.goalTime)
+			assert.Equal(t, tc.expectedDesc, actual)
+		})
+	}
+}
+
+func TestParseSpeed(t *testing.T) {
+	testCases := []struct {
+		testName      string
+		desc          string
+		expectedSpeed int
+		expectedDesc  string
+	}{
+		{
+			testName:      "no placeholder",
+			desc:          "Run 5 miles",
+			expectedSpeed: 0,
+			expectedDesc:  "Run 5 miles",
+		},
+		{
+			testName:      "with placeholder",
+			desc:          "Run 5 miles at <100%rp> pace",
+			expectedSpeed: 100,
+			expectedDesc:  "Run 5 miles at <rp> pace",
+		},
+		{
+			testName:      "with placeholder and extra text",
+			desc:          "Run 5 miles@<10%rp> pace for 30 minutes",
+			expectedSpeed: 10,
+			expectedDesc:  "Run 5 miles@<rp> pace for 30 minutes",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.testName, func(t *testing.T) {
+			speed, desc := ParseSpeed(tc.desc)
+			assert.Equal(t, tc.expectedSpeed, speed)
+			assert.Equal(t, tc.expectedDesc, desc)
 		})
 	}
 }

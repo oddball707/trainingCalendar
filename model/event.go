@@ -31,7 +31,7 @@ const (
 type Race struct {
 	Name      string
 	Type      RaceType
-	Distance  int
+	Distance  float64
 	RaceFiles RaceData
 	Date      time.Time
 }
@@ -43,22 +43,19 @@ type RaceData struct {
 }
 
 type DynamicOptions struct {
-	WeeklyMileage int  `json:"weeklyMileage"`
-	BackToBacks   bool `json:"backToBacks"`
-	RestDays      int  `json:"restDays"`
-	WowIncrease   int  `json:"increase"`
-	RestWeekFreq  int  `json:"restWeekFreq"`
-	RestWeekLevel int  `json:"restWeekLevel"`
-}
-
-type FiveKOptions struct {
-	GoalTime float64 `json:"goalTime"`
+	WeeklyMileage int     `json:"weeklyMileage"`
+	BackToBacks   bool    `json:"backToBacks"`
+	RestDays      int     `json:"restDays"`
+	WowIncrease   int     `json:"increase"`
+	RestWeekFreq  int     `json:"restWeekFreq"`
+	RestWeekLevel int     `json:"restWeekLevel"`
+	GoalTime      float64 `json:"goalTime"`
 }
 
 var RaceTypeMap = map[RaceType]*Race{
 	FiveK: {
 		Name:     "5k",
-		Distance: 3,
+		Distance: 3.1,
 		RaceFiles: RaceData{
 			TitlesFile:       "data/5k.csv",
 			DistancesFile:    "data/5k_distance.csv",
@@ -67,21 +64,21 @@ var RaceTypeMap = map[RaceType]*Race{
 	},
 	Half: {
 		Name:     "Half Marathon",
-		Distance: 13,
+		Distance: 13.1,
 		RaceFiles: RaceData{
 			TitlesFile: "data/half.csv",
 		},
 	},
 	Marathon: {
 		Name:     "Marathon",
-		Distance: 26,
+		Distance: 26.2,
 		RaceFiles: RaceData{
 			TitlesFile: "data/marathon.csv",
 		},
 	},
 	FiftyK: {
 		Name:     "50K Ultra",
-		Distance: 31,
+		Distance: 31.1,
 		RaceFiles: RaceData{
 			TitlesFile: "data/50k.csv",
 		},
@@ -95,7 +92,7 @@ var RaceTypeMap = map[RaceType]*Race{
 	},
 	HundredK: {
 		Name:     "100K Ultra",
-		Distance: 62,
+		Distance: 62.2,
 		RaceFiles: RaceData{
 			TitlesFile: "data/100k.csv",
 		},
