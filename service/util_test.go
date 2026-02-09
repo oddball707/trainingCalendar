@@ -194,35 +194,41 @@ func TestSetDescription(t *testing.T) {
 
 func TestParseSpeed(t *testing.T) {
 	testCases := []struct {
-		testName      string
-		desc          string
-		expectedSpeed int
-		expectedDesc  string
+		testName       string
+		desc           string
+		expectedSpeeds []int
+		expectedDesc   string
 	}{
 		{
-			testName:      "no placeholder",
-			desc:          "Run 5 miles",
-			expectedSpeed: 0,
-			expectedDesc:  "Run 5 miles",
+			testName:       "no placeholder",
+			desc:           "Run 5 miles",
+			expectedSpeeds: []int{},
+			expectedDesc:   "Run 5 miles",
 		},
 		{
-			testName:      "with placeholder",
-			desc:          "Run 5 miles at <100%rp> pace",
-			expectedSpeed: 100,
-			expectedDesc:  "Run 5 miles at <rp> pace",
+			testName:       "with placeholder",
+			desc:           "Run 5 miles at <100%rp> pace",
+			expectedSpeeds: []int{100},
+			expectedDesc:   "Run 5 miles at <rp> pace",
 		},
 		{
-			testName:      "with placeholder and extra text",
-			desc:          "Run 5 miles@<10%rp> pace for 30 minutes",
-			expectedSpeed: 10,
-			expectedDesc:  "Run 5 miles@<rp> pace for 30 minutes",
+			testName:       "with placeholder and extra text",
+			desc:           "Run 5 miles@<10%rp> pace for 30 minutes",
+			expectedSpeeds: []int{10},
+			expectedDesc:   "Run 5 miles@<rp> pace for 30 minutes",
+		},
+		{
+			testName:       "with double placeholder and modifier",
+			desc:           "60min@<65%rp>-<75%rp>",
+			expectedSpeeds: []int{65, 75},
+			expectedDesc:   "60min@<rp>-<rp>",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
 			speed, desc := ParseSpeed(tc.desc)
-			assert.Equal(t, tc.expectedSpeed, speed)
+			assert.Equal(t, tc.expectedSpeeds, speed)
 			assert.Equal(t, tc.expectedDesc, desc)
 		})
 	}

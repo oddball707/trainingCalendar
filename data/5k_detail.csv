@@ -1,10 +1,10 @@
 Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
-,10x200m@<112%rp>;90s recovery,,6x400m@<103%rp>;2min recovery,,Bike/Swim/Rest,60min
-,12x200m@<112%rp>;90s recovery,,8x400m@<103%rp>;2min recovery,,Bike/Swim/Rest,65min
-,6x400m@<112%rp>;2min recovery,,5x600m@<103%rp>;2min recovery,,Bike/Swim/Rest,75min
-,8x400m@<112%rp>;2min recovery,,6x600m@<103%rp>;2min recovery,,Bike/Swim/Rest,85min
-,5x600m@<112%rp>;2min recovery,,5x800@<103%rp>;2min recovery,,Bike/Swim/Rest,90min
-,6x600m@<112%rp>;2min recovery,,6x800m@<103%rp>;2min recovery,,Bike/Swim/Rest,95min
-,4x800m@<112%rp>;2:30min recovery,,5x1k@<103%rp>;3min recovery,,Bike/Swim/Rest,95min
-,8x400m@<112%rp>;90s recovery,,5x900m + 100m kick@<103%rp>;1k recovery,,Bike/Swim/Rest,70min
+,10x200m@<112%rp>;90s recovery,,6x400m@<103%rp>;2min recovery,,Bike/Swim/Rest,60min@<65%rp>-<75%rp>
+,12x200m@<112%rp>;90s recovery,,8x400m@<103%rp>;2min recovery,,Bike/Swim/Rest,65min<65%rp>-<75%rp>
+,6x400m@<112%rp>;2min recovery,,5x600m@<103%rp>;2min recovery,,Bike/Swim/Rest,75min<65%rp>-<75%rp>
+,8x400m@<112%rp>;2min recovery,,6x600m@<103%rp>;2min recovery,,Bike/Swim/Rest,85min<65%rp>-<75%rp>
+,5x600m@<112%rp>;2min recovery,,5x800@<103%rp>;2min recovery,,Bike/Swim/Rest,90min<65%rp>-<75%rp>
+,6x600m@<112%rp>;2min recovery,,6x800m@<103%rp>;2min recovery,,Bike/Swim/Rest,95min<65%rp>-<75%rp>
+,4x800m@<112%rp>;2:30min recovery,,5x1k@<103%rp>;3min recovery,,Bike/Swim/Rest,95min<65%rp>-<75%rp>
+,8x400m@<112%rp>;90s recovery,,5x900m + 100m kick@<103%rp>;1k recovery,,Bike/Swim/Rest,70min<65%rp>-<75%rp>
 ,8x200m@<112%rp>;90s recovery,,,,20-30min shake out,Race Day!
