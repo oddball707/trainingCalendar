@@ -66,7 +66,7 @@ func PaceToFloat(pace string) (float64, error) {
 	}
 
 	minutes, err := strconv.Atoi(parts[0])
-	if err != nil || minutes < 0 || minutes > 59 {
+	if err != nil || minutes < 0 {
 		return 0, fmt.Errorf("invalid minutes in pace: %s", parts[0])
 	}
 

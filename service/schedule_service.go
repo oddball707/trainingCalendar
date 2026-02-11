@@ -110,7 +110,7 @@ func (s *Service) LoadCalendar(race *m.Race, options *m.DynamicOptions) (m.Sched
 		var weeksDescriptions []string
 
 		weeksDistances := distLines[week]
-		fmt.Printf("Week %d distances: %v\n", week, weeksDistances)
+		log.Printf("Week %d distances: %v", week, weeksDistances)
 		if descLines != nil {
 			weeksDescriptions = descLines[week]
 		}
