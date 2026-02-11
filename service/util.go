@@ -25,8 +25,14 @@ func NextMonday(now time.Time) time.Time {
 	return now.AddDate(0, 0, (1 + 7 - int(now.Weekday())%7))
 }
 
-func SetDescription(desc string, raceMiles float64, goalTime float64) string {
-	goalPace := goalTime / raceMiles
+func SetDescription(desc string, raceMiles float64, goalTime string) string {
+	goalTimeFloat, err := PaceToFloat(goalTime)
+	if err != nil {
+		log.Print("Error parsing goal time: " + err.Error())
+		return desc
+	}
+
+	goalPace := goalTimeFloat / raceMiles
 	paceString := FloatToPace(goalPace)
 
 	speedModifiers := ParseSpeed(desc)
@@ -51,6 +57,25 @@ func FloatToPace(pace float64) string {
 	minutes := int(pace)
 	seconds := int((pace - float64(minutes)) * 60)
 	return fmt.Sprintf("%d:%02d", minutes, seconds)
+}
+
+func PaceToFloat(pace string) (float64, error) {
+	parts := strings.Split(pace, ":")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("invalid pace format: %s", pace)
+	}
+
+	minutes, err := strconv.Atoi(parts[0])
+	if err != nil || minutes < 0 || minutes > 59 {
+		return 0, fmt.Errorf("invalid minutes in pace: %s", parts[0])
+	}
+
+	seconds, err := strconv.Atoi(parts[1])
+	if err != nil || seconds < 0 || seconds > 59 {
+		return 0, fmt.Errorf("invalid seconds in pace: %s", parts[1])
+	}
+
+	return float64(minutes) + float64(seconds)/60, nil
 }
 
 func ParseSpeed(desc string) []int {

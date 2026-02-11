@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"io"
 
 	m "github.com/oddball707/trainingCalendar/model"
 	s "github.com/oddball707/trainingCalendar/service"
@@ -86,7 +87,7 @@ func (h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 
 func parseCreateReq(r *http.Request) (*m.Race, *m.DynamicOptions, error) {
 	// Read body
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
 		return nil, nil, err

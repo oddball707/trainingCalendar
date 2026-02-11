@@ -43,18 +43,19 @@ type RaceData struct {
 }
 
 type DynamicOptions struct {
-	WeeklyMileage int     `json:"weeklyMileage"`
-	BackToBacks   bool    `json:"backToBacks"`
-	RestDays      int     `json:"restDays"`
-	WowIncrease   int     `json:"increase"`
-	RestWeekFreq  int     `json:"restWeekFreq"`
-	RestWeekLevel int     `json:"restWeekLevel"`
-	GoalTime      float64 `json:"goalTime"`
+	WeeklyMileage int    `json:"weeklyMileage"`
+	BackToBacks   bool   `json:"backToBacks"`
+	RestDays      int    `json:"restDays"`
+	WowIncrease   int    `json:"increase"`
+	RestWeekFreq  int    `json:"restWeekFreq"`
+	RestWeekLevel int    `json:"restWeekLevel"`
+	GoalTime      string `json:"goalTime"`
 }
 
 var RaceTypeMap = map[RaceType]*Race{
 	FiveK: {
 		Name:     "5k",
+		Type:     FiveK,
 		Distance: 3.1,
 		RaceFiles: RaceData{
 			TitlesFile:       "data/5k.csv",
@@ -64,27 +65,35 @@ var RaceTypeMap = map[RaceType]*Race{
 	},
 	Half: {
 		Name:     "Half Marathon",
+		Type:     Half,
 		Distance: 13.1,
 		RaceFiles: RaceData{
-			TitlesFile: "data/half.csv",
+			TitlesFile:       "data/half.csv",
+			DistancesFile:    "data/half_distance.csv",
+			DescriptionsFile: "data/half_detail.csv",
 		},
 	},
 	Marathon: {
 		Name:     "Marathon",
+		Type:     Marathon,
 		Distance: 26.2,
 		RaceFiles: RaceData{
-			TitlesFile: "data/marathon.csv",
+			TitlesFile:    "data/marathon.csv",
+			DistancesFile: "data/marathon_distance.csv",
 		},
 	},
 	FiftyK: {
 		Name:     "50K Ultra",
+		Type:     FiftyK,
 		Distance: 31.1,
 		RaceFiles: RaceData{
-			TitlesFile: "data/50k.csv",
+			TitlesFile:    "data/50k.csv",
+			DistancesFile: "data/50k_distance.csv",
 		},
 	},
 	FifyM: {
 		Name:     "50 Mile Ultra",
+		Type:     FifyM,
 		Distance: 50,
 		RaceFiles: RaceData{
 			TitlesFile: "data/50m.csv",
@@ -92,17 +101,25 @@ var RaceTypeMap = map[RaceType]*Race{
 	},
 	HundredK: {
 		Name:     "100K Ultra",
+		Type:     HundredK,
 		Distance: 62.2,
 		RaceFiles: RaceData{
-			TitlesFile: "data/100k.csv",
+			TitlesFile:    "data/100k.csv",
+			DistancesFile: "data/100k_distance.csv",
 		},
 	},
 	HundredM: {
 		Name:     "100 Mile Ultra",
+		Type:     HundredM,
 		Distance: 100,
 		RaceFiles: RaceData{
-			TitlesFile: "data/100m.csv",
+			TitlesFile:    "data/100m.csv",
+			DistancesFile: "data/100m_distance.csv",
 		},
+	},
+	Dynamic: {
+		Name: "Dynamic",
+		Type: Dynamic,
 	},
 }
 

@@ -30,7 +30,7 @@ func NewService() *Service {
 }
 
 func (s *Service) GetSchedule(r *m.Race, o *m.DynamicOptions) (*m.Schedule, error) {
-	log.Printf("Creating schedule for a %s that starts on %s", r.Name, r.Date.Format(m.DateLayout))
+	log.Printf("Creating schedule for a %s race that starts on %s", r.Name, r.Date.Format(m.DateLayout))
 	schedule, err := s.LoadCalendar(r, o)
 	if err != nil {
 		return nil, err

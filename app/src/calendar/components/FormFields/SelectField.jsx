@@ -6,6 +6,7 @@ import { useField, useFormikContext} from 'formik';
 import NumberField from './NumberField';
 import PercentField from './PercentField';
 import SwitchField from './SwitchField';
+import TimeField from './TimeField';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -57,7 +58,7 @@ function SelectRaceType(props) {
               <Typography variant="subtitle1" color="secondary" component="div">
                 {item.description}
               </Typography>
-              <Collapse in={formValues["raceType"] === '7' && item.value === '7'} timeout="auto" unmountOnExit>
+              <Collapse in={formValues["raceType"] === '8' && item.value === '8'} timeout="auto" unmountOnExit>
                 <Grid container direction="column" spacing={2} >
                   <Grid item>
                     <Typography variant="h6" gutterBottom>
@@ -94,6 +95,16 @@ function SelectRaceType(props) {
                       {options.restWeekLevel.label}
                     </Typography>
                     <PercentField name={options.restWeekLevel.name} />
+                  </Grid>
+                </Grid>
+              </Collapse>
+              <Collapse in={formValues["raceType"] === '1' && item.value === '1'} timeout="auto" unmountOnExit>
+                <Grid container direction="column" spacing={2} >
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom>
+                      {options.goalTime.label}
+                    </Typography>
+                    <TimeField name={options.goalTime.name}/>
                   </Grid>
                 </Grid>
               </Collapse>

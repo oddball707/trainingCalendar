@@ -35,7 +35,8 @@ class ScheduleTable extends React.Component {
         restDays: this.props.formValues.restDays,
         increase: this.props.formValues.increase,
         restWeekFreq: this.props.formValues.restWeekFreq,
-        restWeekLevel: this.props.formValues.restWeekLevel
+        restWeekLevel: this.props.formValues.restWeekLevel,
+        goalTime: this.props.formValues.goalTime
       }
     };
     axios({
@@ -83,7 +84,7 @@ class ScheduleTable extends React.Component {
                     {moment(new Date(week.weekStart)).format('M/DD')}
                   </TableCell>
                   {(Array.isArray(week.days) ? week.days : []).map((day, idx) => (
-                    <TableCell align="center" key={idx}>{day.description}</TableCell>
+                    <TableCell align="center" key={idx}>{day.title}</TableCell>
                   ))}
                   {raceType !== '1' && (
                     <TableCell align="center" component="th" scope="row">{week.totalDistance}</TableCell>

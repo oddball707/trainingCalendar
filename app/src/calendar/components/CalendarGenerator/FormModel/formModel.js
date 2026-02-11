@@ -39,6 +39,10 @@ export default {
       restWeekLevel: {
         name: 'restWeekLevel',
         label: 'At what percent of a standard week do you want to plan each rest week?'
+      },
+      goalTime: {
+        name: 'goalTime',
+        label: 'What is your goal finish time? (mm:ss)'
       }
     }
   }
