@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -28,14 +29,19 @@ func SetDescription(desc string, raceMiles float64, goalTime float64) string {
 	goalPace := goalTime / raceMiles
 	paceString := FloatToPace(goalPace)
 
-	speedModifiers, desc := ParseSpeed(desc)
+	speedModifiers := ParseSpeed(desc)
 	if len(speedModifiers) > 0 {
 		for _, speedModifier := range speedModifiers {
 			modifiedPace := goalPace / (float64(speedModifier) / 100)
 			paceString = FloatToPace(modifiedPace)
 
-			desc = strings.Replace(desc, pacePlaceholder, paceString, 1)
+			re := regexp.MustCompile(`<\d{1,3}%rp>`)
+			loc := re.FindStringIndex(desc)
+			desc = desc[:loc[0]] + paceString + desc[loc[1]:]
+			//desc = re.ReplaceAllString(desc, paceString)
 		}
+	} else {
+		desc = strings.ReplaceAll(desc, pacePlaceholder, paceString)
 	}
 
 	return desc
@@ -47,7 +53,7 @@ func FloatToPace(pace float64) string {
 	return fmt.Sprintf("%d:%02d", minutes, seconds)
 }
 
-func ParseSpeed(desc string) ([]int, string) {
+func ParseSpeed(desc string) []int {
 	speeds := []int{}
 	// find opening <
 	for i, char := range desc {
@@ -59,15 +65,15 @@ func ParseSpeed(desc string) ([]int, string) {
 					speed, err := strconv.Atoi(speedStr)
 					if err != nil {
 						log.Print("Error parsing speed from description: " + err.Error())
-						return nil, desc
+						return speeds
 					}
-					// remove the percentage from the original string
-					desc = desc[:i+1] + desc[i+j+1:]
+					// // remove the percentage from the original string
+					// desc = desc[:i+1] + desc[i+j+1:]
 					speeds = append(speeds, speed)
 					break
 				}
 			}
 		}
 	}
-	return speeds, desc
+	return speeds
 }

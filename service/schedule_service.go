@@ -63,13 +63,13 @@ func (s *Service) CreateIcal(r *m.Race, o *m.DynamicOptions, filePath string) (*
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
-	b.WriteTo(w)
+	_, err = b.WriteTo(w)
 	if err != nil {
 		log.Print("Error writing ical: " + err.Error())
 		return nil, err
 	}
 
-	w.Flush()
+	err = w.Flush()
 	if err != nil {
 		log.Print("Error flushing writer: " + err.Error())
 		return nil, err
