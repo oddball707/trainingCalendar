@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
 	"strconv"

@@ -1,8 +1,6 @@
 package model
 
 import (
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -121,17 +119,4 @@ var RaceTypeMap = map[RaceType]*Race{
 		Name: "Dynamic",
 		Type: Dynamic,
 	},
-}
-
-func (e *Event) SetDistance() {
-	dist, err := strconv.Atoi(strings.Trim(e.Description, " "))
-	if strings.ToLower(e.Description) == "rest" ||
-		strings.ToLower(e.Description) == "crosstrain" ||
-		strings.ToLower(e.Description) == "cross" {
-		e.Distance = 0
-	} else if err != nil {
-		e.Distance = defaultWorkoutDistance
-	} else {
-		e.Distance = dist
-	}
 }

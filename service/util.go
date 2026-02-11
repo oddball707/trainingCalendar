@@ -44,7 +44,6 @@ func SetDescription(desc string, raceMiles float64, goalTime string) string {
 			re := regexp.MustCompile(`<\d{1,3}%rp>`)
 			loc := re.FindStringIndex(desc)
 			desc = desc[:loc[0]] + paceString + desc[loc[1]:]
-			//desc = re.ReplaceAllString(desc, paceString)
 		}
 	} else {
 		desc = strings.ReplaceAll(desc, pacePlaceholder, paceString)
@@ -92,8 +91,6 @@ func ParseSpeed(desc string) []int {
 						log.Print("Error parsing speed from description: " + err.Error())
 						return speeds
 					}
-					// // remove the percentage from the original string
-					// desc = desc[:i+1] + desc[i+j+1:]
 					speeds = append(speeds, speed)
 					break
 				}
