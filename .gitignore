@@ -4,6 +4,7 @@ token.json
 .terraform/
 out/
 lambda/main
+main
 trainingCalendar
 training.ics
 **/node_modules

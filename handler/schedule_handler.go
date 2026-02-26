@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"io"
 
 	m "github.com/oddball707/trainingCalendar/model"
 	s "github.com/oddball707/trainingCalendar/service"
@@ -22,9 +23,9 @@ type Handler struct {
 }
 
 type CreateRequest struct {
-	Date     string    `json:"date"`
-	RaceType string    `json:"type"`
-	Options  m.Options `json:"options"`
+	Date     string           `json:"date"`
+	RaceType string           `json:"type"`
+	Options  m.DynamicOptions `json:"options"`
 }
 
 func NewHandler(service s.ScheduleService) *Handler {
@@ -84,9 +85,9 @@ func (h *Handler) CreateSchedule(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(schedule)
 }
 
-func parseCreateReq(r *http.Request) (*m.Race, *m.Options, error) {
+func parseCreateReq(r *http.Request) (*m.Race, *m.DynamicOptions, error) {
 	// Read body
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
 		return nil, nil, err
@@ -100,6 +101,14 @@ func parseCreateReq(r *http.Request) (*m.Race, *m.Options, error) {
 		return nil, nil, err
 	}
 
+	raceTypeInt, err := strconv.Atoi(msg.RaceType)
+	if err != nil {
+		log.Print("Invalid race type, expected integer")
+		return nil, nil, err
+	}
+	raceType := m.RaceType(raceTypeInt)
+	race := m.RaceTypeMap[raceType]
+
 	raceDate, err := time.Parse(m.DateLayout, msg.Date)
 	if err != nil {
 		raceDate, err = time.Parse(m.BackupDateLayout, msg.Date)
@@ -109,16 +118,8 @@ func parseCreateReq(r *http.Request) (*m.Race, *m.Options, error) {
 		}
 	}
 
-	raceTypeInt, err := strconv.Atoi(msg.RaceType)
-	if err != nil {
-		log.Print("Invalid race type, expected integer")
-		return nil, nil, err
-	}
-	raceType := m.RaceType(raceTypeInt)
-	race := &m.Race{
-		RaceDate: raceDate,
-		RaceType: raceType,
-	}
+	race.Date = raceDate
+
 	options := &msg.Options
 
 	return race, options, nil

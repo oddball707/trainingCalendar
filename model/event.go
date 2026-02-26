@@ -7,27 +7,16 @@ import (
 // Event is a date entry with the date and description
 type Event struct {
 	Date        time.Time `json:"date"`
+	Title       string    `json:"title"`
 	Description string    `json:"description"`
-}
-
-type Race struct {
-	RaceDate time.Time
-	RaceType RaceType
-}
-
-type Options struct {
-	WeeklyMileage int  `json:"weeklyMileage"`
-	BackToBacks   bool `json:"backToBacks"`
-	RestDays      int  `json:"restDays"`
-	WowIncrease   int  `json:"increase"`
-	RestWeekFreq  int  `json:"restWeekFreq"`
-	RestWeekLevel int  `json:"restWeekLevel"`
+	Distance    int       `json:"distance"`
 }
 
 type RaceType int
 
 const (
 	None RaceType = iota
+	FiveK
 	Half
 	Marathon
 	FiftyK
@@ -37,40 +26,97 @@ const (
 	Dynamic
 )
 
-func (r RaceType) GetFile() string {
-	switch r {
-	case Half:
-		return "data/half.csv"
-	case Marathon:
-		return "data/marathon.csv"
-	case FiftyK:
-		return "data/50k.csv"
-	case FifyM:
-		return "data/50m.csv"
-	case HundredK:
-		return "data/100k.csv"
-	case HundredM:
-		return "data/100m.csv"
-	}
-	return "data/marathon.csv"
+type Race struct {
+	Name      string
+	Type      RaceType
+	Distance  float64
+	RaceFiles RaceData
+	Date      time.Time
 }
 
-func (r RaceType) ToString() string {
-	switch r {
-	case Half:
-		return "Half Marathon"
-	case Marathon:
-		return "Marathon"
-	case FiftyK:
-		return "50K Ultra"
-	case FifyM:
-		return "50 Mile Ultra"
-	case HundredK:
-		return "100K Ultra"
-	case HundredM:
-		return "100 Mile Ultra"
-	case Dynamic:
-		return "Dynamic Schedule"
-	}
-	return "Error - Reverting to Marathon"
+type RaceData struct {
+	TitlesFile       string
+	DistancesFile    string
+	DescriptionsFile string
+}
+
+type DynamicOptions struct {
+	WeeklyMileage int    `json:"weeklyMileage"`
+	BackToBacks   bool   `json:"backToBacks"`
+	RestDays      int    `json:"restDays"`
+	WowIncrease   int    `json:"increase"`
+	RestWeekFreq  int    `json:"restWeekFreq"`
+	RestWeekLevel int    `json:"restWeekLevel"`
+	GoalTime      string `json:"goalTime"`
+}
+
+var RaceTypeMap = map[RaceType]*Race{
+	FiveK: {
+		Name:     "5k",
+		Type:     FiveK,
+		Distance: 3.1,
+		RaceFiles: RaceData{
+			TitlesFile:       "data/5k.csv",
+			DistancesFile:    "data/5k_distance.csv",
+			DescriptionsFile: "data/5k_detail.csv",
+		},
+	},
+	Half: {
+		Name:     "Half Marathon",
+		Type:     Half,
+		Distance: 13.1,
+		RaceFiles: RaceData{
+			TitlesFile:       "data/half.csv",
+			DistancesFile:    "data/half_distance.csv",
+			DescriptionsFile: "data/half_detail.csv",
+		},
+	},
+	Marathon: {
+		Name:     "Marathon",
+		Type:     Marathon,
+		Distance: 26.2,
+		RaceFiles: RaceData{
+			TitlesFile:    "data/marathon.csv",
+			DistancesFile: "data/marathon_distance.csv",
+		},
+	},
+	FiftyK: {
+		Name:     "50K Ultra",
+		Type:     FiftyK,
+		Distance: 31.1,
+		RaceFiles: RaceData{
+			TitlesFile:    "data/50k.csv",
+			DistancesFile: "data/50k_distance.csv",
+		},
+	},
+	FifyM: {
+		Name:     "50 Mile Ultra",
+		Type:     FifyM,
+		Distance: 50,
+		RaceFiles: RaceData{
+			TitlesFile: "data/50m.csv",
+		},
+	},
+	HundredK: {
+		Name:     "100K Ultra",
+		Type:     HundredK,
+		Distance: 62.2,
+		RaceFiles: RaceData{
+			TitlesFile:    "data/100k.csv",
+			DistancesFile: "data/100k_distance.csv",
+		},
+	},
+	HundredM: {
+		Name:     "100 Mile Ultra",
+		Type:     HundredM,
+		Distance: 100,
+		RaceFiles: RaceData{
+			TitlesFile:    "data/100m.csv",
+			DistancesFile: "data/100m_distance.csv",
+		},
+	},
+	Dynamic: {
+		Name: "Dynamic",
+		Type: Dynamic,
+	},
 }

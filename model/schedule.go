@@ -3,9 +3,10 @@ package model
 import (
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 	"time"
-	"log"
+
 	"github.com/jordic/goics"
 )
 
@@ -13,7 +14,7 @@ var DateLayout = "01/02/2006"
 var Header = []string{"StartDate", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
 var BackupDateLayout = "1/2/06"
 
-//A Schedule is an array of Weeks
+// A Schedule is an array of Weeks
 type Schedule []*Week
 
 func (s Schedule) Print() {
@@ -24,7 +25,7 @@ func (s Schedule) Print() {
 		fmt.Print(week.WeekStart.Format(DateLayout))
 		fmt.Print(" | ")
 		for _, day := range week.Days {
-			fmt.Print(day.Description)
+			fmt.Print(day.Title)
 			fmt.Print("  | ")
 		}
 		fmt.Println(" ")
@@ -37,11 +38,11 @@ func (s Schedule) WriteCsv() {
 		fmt.Println("Failed to open calendar.csv: " + err.Error())
 		log.Fatalf(err.Error())
 	}
-    defer file.Close()
+	defer file.Close()
 
-    writer := csv.NewWriter(file)
-    defer writer.Flush()
-    err = writer.Write(Header)
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+	err = writer.Write(Header)
 	if err != nil {
 		fmt.Println("Failed to write header: " + err.Error())
 		log.Fatalf(err.Error())
@@ -69,15 +70,17 @@ func (s Schedule) EmitICal() goics.Componenter {
 
 	for _, week := range s {
 		for _, day := range week.Days {
-			if day.Date.Before(time.Now()) { continue }
+			if day.Date.Before(time.Now()) {
+				continue
+			}
 			c := goics.NewComponent()
 			c.SetType("VEVENT")
 			k, v := goics.FormatDateField("DTEND", day.Date)
 			c.AddProperty(k, v)
 			k, v = goics.FormatDateField("DTSTART", day.Date)
 			c.AddProperty(k, v)
-			c.AddProperty("SUMMARY", day.Description)
-
+			c.AddProperty("SUMMARY", day.Title)
+			c.AddProperty("DESCRIPTION", day.Description)
 			component.AddComponent(c)
 		}
 	}

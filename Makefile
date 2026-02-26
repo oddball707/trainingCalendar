@@ -9,7 +9,7 @@ run-dev:
 
 build-go:
 	go mod download
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /main .
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o ./main .
 
 build-npm:
 	cd app;	npm install; npm run build;
@@ -19,3 +19,6 @@ npm:
 
 cmd:
 	go run main.go -cmd
+
+test:
+	gotestsum -- -v ./...
