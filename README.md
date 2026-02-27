@@ -29,6 +29,7 @@ You can run `go run main.go -cmd -h` to view available instructions, but running
 ## Infrastructure
     - Terraform Cloud used for infrastructure deployments
     - see /main.tf
+    - Must log into terraform cloud and manually deploy any changes
 
 ## Frontend
     - AWS Amplify used for frontend deployments
@@ -37,4 +38,5 @@ You can run `go run main.go -cmd -h` to view available instructions, but running
 ## Backend
     - Run on lambda (see /lambda)
     - deployed via Update Lambda Github Action (triggered manually)
+    - Must update /lambda/go.mod to reference newest tag version
 
