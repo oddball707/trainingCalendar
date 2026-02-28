@@ -40,3 +40,40 @@ You can run `go run main.go -cmd -h` to view available instructions, but running
     - deployed via Update Lambda Github Action (triggered manually)
     - Must update /lambda/go.mod to reference newest tag version
 
+## Releasing a New Version
+
+To create a new release:
+
+1. Ensure all changes are committed and pushed to main branch
+2. Run the release command with the desired version:
+   ```bash
+   make release VERSION=v1.3.1
+   ```
+   This will:
+   - Create and push a new git tag
+   - Update lambda/go.mod to use the new version
+   - Fetch the module from GitHub
+   - Run go mod tidy
+
+3. Test the lambda build:
+   ```bash
+   cd lambda && make build
+   ```
+
+4. Commit and push the updated lambda/go.mod:
+   ```bash
+   git add lambda/go.mod
+   git commit -m "Update lambda to v1.3.1"
+   git push
+   ```
+
+5. Deploy via the 'Update Lambda' GitHub Action (triggered manually)
+
+### Development Mode
+
+To switch lambda back to using local code for development:
+```bash
+make dev-mode
+```
+
+This adds a replace directive to use your local changes without creating a new release.
